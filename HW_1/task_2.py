@@ -1,1 +1,1 @@
-print ("New python task 2")
+print ("Python task 2")
