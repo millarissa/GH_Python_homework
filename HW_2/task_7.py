@@ -4,7 +4,7 @@ and print it.
 List must include both strings and integers and must be hardcoded.
 """
 
-list_values = [1,2,'aaa','jjj',134,'HFdnfh']
+list_values = [1, 2, 'aaa', 'jjj', 134, 'HFdnfh']
 
-str_from_list = ' '.join(str(x) for x in list_values)
-print (str_from_list)
+str_from_list = ''.join(str(x) for x in list_values)
+print(str_from_list)

@@ -11,4 +11,4 @@ lines = ""
 for i in range(user_num):
     lines += input("String: ")
 
-print ("Concatenated line: ",lines)
+print("Concatenated line: ",lines)
