@@ -15,7 +15,10 @@ def calculator(num_1, operation, num_2):
     elif operation == '*':
         res = num_1 * num_2
     elif operation == '/':
-        res = num_1 / num_2
+        if num_2 == 0:
+            res = 'Division by zero, please, try again.'
+        else:
+            res = num_1 / num_2
     elif operation == '%':
         res = num_1 % num_2        
     elif operation == '//':
