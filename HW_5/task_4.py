@@ -12,16 +12,14 @@ def prime_list(start, stop):
     
     for num in range(start,stop):
         prime = True
-        
-        if num == 0 or num == 1:
-            prime = False
-        else:            
+
+        if num > 1:
             for x in range(2, num):
                 if(num % x == 0):
                     prime = False
             if prime:
                 prime_list.append(num)
-        
+
     print(prime_list)
     
     return prime_list
