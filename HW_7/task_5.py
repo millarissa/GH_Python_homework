@@ -9,11 +9,15 @@
 
 def count_symbols(line):
 
+    new_line = line.lower()
+    line = list(new_line)
+    
     res_dict = {str(x): line.count(x) for x in line if line.count(x) > 1}
-    print(res_dict)
+    result = len(res_dict)
+    print(result)
 
-    return res_dict
+    return result
 
 
-line = list(input('Enter line with letters and numbers: '))
+line = input('Enter line with letters and numbers: ')
 count_symbols(line)

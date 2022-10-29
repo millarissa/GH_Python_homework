@@ -7,10 +7,9 @@
 
 def short_word(line):
 
-    words = line.split()
-    min_len = len(min(words, key=len))
+    words_len = {len(x) for x in line.split()}
+    result = min(words_len)
 
-    result = {len(x) for x in words if len(x) == min_len}
     print(result)
 
     return result

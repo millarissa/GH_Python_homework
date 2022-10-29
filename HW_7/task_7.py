@@ -10,8 +10,7 @@
 
 def list_difference(list1, list2):
 
-    set2 = set(list2)
-    result = [x for x in list1 if x not in set2]
+    result = [x for x in list1 if x not in list2]
 
     print(result)
 

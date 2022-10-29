@@ -3,40 +3,32 @@
 """
 
 
-def custom_range(one, two=None, three=None):
+def custom_range(start, stop=None, step=None):
 
-    if two is None:
+    if stop is None:
+        stop = start
         start = 0
-        stop = one
         step = 1
 
-    elif three is None:
-        start = one
-        stop = two
+    elif step is None:
         step = 1
 
     else:
-        if three == 0:
+        if step == 0:
             raise ValueError('arg 3 must not be zero.')
-        start = one
-        stop = two
-        step = three
 
     i = start
 
     if stop < 0 and step > 0:
         i = []
 
-    elif stop > 0 and step < 0:
-        i = []
-
-    elif stop < 0 and step < 0:
+    elif step < 0:
 
         while i > stop:
             yield i
             i += step
 
-    elif stop > 0 and step > 0:
+    elif step > 0:
 
         while i < stop:
             yield i
@@ -46,5 +38,6 @@ def custom_range(one, two=None, three=None):
         i = []
 
 
-for i in custom_range(1, 10, 2):
+for i in custom_range(10, 2, -1):
     print(i)
+
