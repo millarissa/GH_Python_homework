@@ -1,0 +1,1 @@
+{"operation_type": "Adding", "balance": 0, "change": 1500, "final_balance": 1500}{"operation_type": "Adding", "balance": 1500, "change": 4500, "final_balance": 6000}{"operation_type": "Withdraw", "balance": 6000, "change": 3000, "final_balance": 3000}
