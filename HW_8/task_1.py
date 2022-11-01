@@ -18,7 +18,11 @@ def traffic_generator(traffic_ligth):
     while i < 100:
 
         for ligth_col in traffic_ligth:
-            ligth_list = list(itertools.repeat(ligth_col, 4))
+            if ligth_col == 'Yellow':
+                count = 2
+            else:
+                count = 4
+            ligth_list = list(itertools.repeat(ligth_col, count))
             for ligth in ligth_list:
                 yield ligth
 
@@ -47,3 +51,4 @@ def start():
 
 
 start()
+
