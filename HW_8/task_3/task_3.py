@@ -110,19 +110,23 @@ def withdraw_balance(name):
         operation = 'Withdraw'
         change_sum = int(input('Enter sum for withdraw from your balance: '))
 
-        with open(name+'_balance.txt', 'r') as f:
-            old_bal = int(f.read())
+        if change_sum > 0:
+            
+            with open(name+'_balance.txt', 'r') as f:
+                old_bal = int(f.read())
 
-        if change_sum < old_bal:
-            with open(name+'_balance.txt', 'w') as f:
-                new_bal = old_bal - change_sum
-                f.write(str(new_bal))
-                print('Cash was sucsessfully withdrawed.')
+            if change_sum < old_bal:
+                with open(name+'_balance.txt', 'w') as f:
+                    new_bal = old_bal - change_sum
+                    f.write(str(new_bal))
+                    print('Cash was sucsessfully withdrawed.')
 
-            transactions(name, operation, old_bal, change_sum, new_bal)
+                transactions(name, operation, old_bal, change_sum, new_bal)
 
+            else:
+                print('The amount is more than what you have in your account.')
         else:
-            print('The amount is more than what you have in your account.')
+            print('You cannot withdraw negative sum.')
 
     except ValueError:
         print('Sum must be entered in numbers.')
