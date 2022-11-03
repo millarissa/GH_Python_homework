@@ -1,1 +1,1 @@
-{"operation_type": "Adding", "balance": 0, "change": 45, "final_balance": 45}{"operation_type": "Adding", "balance": 45, "change": 200, "final_balance": 245}
+{"operation_type": "Adding", "balance": 0, "change": 45, "final_balance": 45}{"operation_type": "Adding", "balance": 45, "change": 200, "final_balance": 245}{"operation_type": "Adding", "balance": 245, "change": 20, "final_balance": 265}{"operation_type": "Adding", "balance": 265, "change": 35, "final_balance": 300}

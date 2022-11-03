@@ -85,15 +85,19 @@ def add_balance(name):
         operation = 'Adding'
         change_sum = int(input('Enter sum for adding to your balance: '))
 
-        with open(name+'_balance.txt', 'r') as f:
-            old_bal = int(f.read())
+        if change_sum > 0:
 
-        with open(name+'_balance.txt', 'w') as f:
-            new_bal = old_bal + change_sum
-            f.write(str(new_bal))
-            print('New sum sucsessfully added to your account.')
+            with open(name+'_balance.txt', 'r') as f:
+                old_bal = int(f.read())
 
-        transactions(name, operation, old_bal, change_sum, new_bal)
+            with open(name+'_balance.txt', 'w') as f:
+                new_bal = old_bal + change_sum
+                f.write(str(new_bal))
+                print('New sum sucsessfully added to your account.')
+
+            transactions(name, operation, old_bal, change_sum, new_bal)
+        else:
+            print('You cannot add negative sum.')
 
     except ValueError:
         print('Sum must be entered in numbers.')
@@ -125,6 +129,20 @@ def withdraw_balance(name):
 
     return
 
+def menu(operation_num, name):
+    if operation_num == 1:
+        check_balance(name)
+    elif operation_num == 2:
+        add_balance(name)
+    elif operation_num == 3:
+        withdraw_balance(name)
+    elif operation_num == 4:
+        print('Goodbye,', name)
+    else:
+        print('Wrong operation number! Please, try again.')
+        
+    return
+
 
 def start():
     if not os.path.isfile('users_login.csv'):
@@ -148,14 +166,20 @@ def start():
         print(welcome_text)
         operation_num = int(input('Enter operation number: '))
 
-        if operation_num == 1:
-            check_balance(name)
-        elif operation_num == 2:
-            add_balance(name)
-        elif operation_num == 3:
-            withdraw_balance(name)
-        else:
-            print('Goodbye, ', name)
+        menu(operation_num, name)
+
+        while operation_num != 4:
+            welcome_text = """
+                Choose operation:
+                1: Check balance
+                2: Add cash
+                3: Withdraw cash
+                4: Exit
+            """
+
+            print(welcome_text)
+            operation_num = int(input('Enter operation number: '))
+            menu(operation_num, name)
 
     else:
         print('Wrond username or password.')

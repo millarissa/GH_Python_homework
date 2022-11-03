@@ -31,19 +31,18 @@ def traffic_generator(traffic_ligth):
 
 def start():
 
-    traffic_ligth = ['Red', 'Red', 'Yellow', 'Green']
-    people_ligth = traffic_ligth.copy()
-    traffic_ligth.reverse()
+    car_traffic_ligth = ['Red', 'Yellow', 'Green', 'Yellow']
+    people_traffic_ligth = ['Green', 'Red', 'Red']
 
-    x1 = 'People'
-    x2 = 'Cars'
+    x1 = 'Cars'
+    x2 = 'People'
     print('{}\t{}'.format(x1, x2))
     print('______________')
 
-    people_traffic = traffic_generator(people_ligth)
-    cars_traffic = traffic_generator(traffic_ligth)
+    people_traffic = traffic_generator(people_traffic_ligth)
+    cars_traffic = traffic_generator(car_traffic_ligth)
 
-    for i, j in zip(people_traffic, cars_traffic):
+    for i, j in zip(cars_traffic, people_traffic):
         print('{}\t{}'.format(i, j))
         time.sleep(1)
 
