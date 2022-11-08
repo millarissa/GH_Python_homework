@@ -396,7 +396,7 @@ def change_banknotes_num(conn):
     if banknote in banknotes_list:
         new_amount = int(input('Enter new banknote amount: '))
 
-        if new_amount > 0:
+        if new_amount >= 0:
             cur.execute(
                     "SELECT amount FROM banknotes WHERE denomination = ?",
                     (banknote,)
