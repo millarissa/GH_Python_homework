@@ -78,13 +78,11 @@ def check_password(conn, name, password):
 
 
 def check_new_user(name, password):
-    correct_name = False
-    correct_pass = False
     correct_login = False
 
     name_len = len(name)
 
-    if name_len >= 3 and name_len <= 50:
+    if 3 <= name_len <= 50:
         correct_name = True
     else:
         correct_name = False
@@ -276,18 +274,21 @@ def update_banknotes_balance(conn, denomination, new_amount):
 
 
 def withdraw_banknotes(conn, available_list, update_sum):
+    cur = conn.cursor()
     result_cash = {}
-    sub_list = [update_sum+1] * (update_sum+1)
-    result_list = [[] for _ in range(update_sum+1)]
+    sub_list = [update_sum + 1] * (update_sum + 1)
+    
+    result_list = [[] for _ in range(update_sum + 1)]
     sub_list[0] = 0
 
-    for i in range(1, update_sum + 1):
+    for i in range(0, update_sum + 1):
+
         for bnknote in available_list:
             note = int(bnknote)
             if i >= note and sub_list[i - note] + 1 < sub_list[i]:
                 sub_list[i] = sub_list[i - note] + 1
                 result_list[i] = result_list[i - note] + [note]
-
+                
     if sub_list[update_sum] != update_sum + 1:
         result_list = result_list[update_sum]
 
@@ -295,7 +296,6 @@ def withdraw_banknotes(conn, available_list, update_sum):
             result_cash[i] = result_list.count(i)
 
         for banknote, count in result_cash.items():
-            cur = conn.cursor()
             cur.execute(
                 "SELECT amount FROM banknotes WHERE denomination = ?",
                 (banknote,)
@@ -303,13 +303,24 @@ def withdraw_banknotes(conn, available_list, update_sum):
             old_amount = cur.fetchone()
             old_amount = old_amount[0]
             new_amount = old_amount - count
-            update_banknotes_balance(conn, banknote, new_amount)
-            print('Cash was sucsessfully withdrawed.')
-            print('Take your cash:')
-            print(count, 'x', banknote)
+
+            if new_amount >= 0:
+                withdraw = True
+            else:
+                print('Sorry, there is no cash suitable to your sum.')
+                withdraw = False
+
     else:
-        print('There is no cash suitable to your sum.')
+        print('Sorry, there is no cash suitable to your sum.')
         print('Change sum multiple to', available_list[0], 'UAH')
+        withdraw = False
+
+    if withdraw:
+        print('Take your cash: ')
+        for banknote, count in result_cash.items():
+            update_banknotes_balance(conn, banknote, new_amount)
+            print(count, 'x', banknote)
+        print('Cash was sucessfully withdrawed.')
 
     return result_cash
 
@@ -406,6 +417,7 @@ def withdraw_balance(conn, name):
                     if change == 0:
                         new_bal = old_bal - update_sum
                         update_balance(conn, (new_bal, name))
+
                         withdraw_banknotes(conn, available_list, update_sum)
                         transaction = (
                                     name,
@@ -551,23 +563,22 @@ def login_user(conn):
 
 
 def register_user(conn):
-    variant = input('Enter Y or N: ')
-    if variant == 'Y':
-        print_text = """
-                Please, enter new user.
-                Name must be between 3 and 50 characters long.
-                Password must be longer than 8 characters,
-                and contain at least 1 digit and 1 capital letter.
+    print_text = """
+            Please, enter new user.
+            Name must be between 3 and 50 characters long.
+            Password must be longer than 8 characters,
+            and contain at least 1 digit and 1 capital letter.
         """
-        print(print_text)
-        new_name = input('Enter your name: ')
-        new_password = input('Enter your password: ')
-        if check_new_user(new_name, new_password):
-            user = (new_name, new_password)
-            update_users(conn, user)
-            print('User was successfully added.')
-        else:
-            print('Please, try again.')
+    print(print_text)
+    new_name = input('Enter your name: ')
+    new_password = input('Enter your password: ')
+    if check_new_user(new_name, new_password):
+        user = (new_name, new_password)
+        update_users(conn, user)
+        print('User was successfully added.')
+        start_menu(conn)
+    else:
+        print('Please, try again.')
     return
 
 
