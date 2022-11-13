@@ -295,6 +295,8 @@ def withdraw_banknotes(conn, available_list, update_sum):
         for i in result_list:
             result_cash[i] = result_list.count(i)
 
+        check_list = []
+
         for banknote, count in result_cash.items():
             cur.execute(
                 "SELECT amount FROM banknotes WHERE denomination = ?",
@@ -304,23 +306,27 @@ def withdraw_banknotes(conn, available_list, update_sum):
             old_amount = old_amount[0]
             new_amount = old_amount - count
 
-            if new_amount >= 0:
+            if old_amount >= count and new_amount >= 0:
                 withdraw = True
+                check_list.append(withdraw)
             else:
-                print('Sorry, there is no cash suitable to your sum.')
                 withdraw = False
+                check_list.append(withdraw)
 
     else:
         print('Sorry, there is no cash suitable to your sum.')
         print('Change sum multiple to', available_list[0], 'UAH')
         withdraw = False
-
-    if withdraw:
+        check_list.append(withdraw)
+    
+    if not False in check_list:
         print('Take your cash: ')
         for banknote, count in result_cash.items():
             update_banknotes_balance(conn, banknote, new_amount)
             print(count, 'x', banknote)
         print('Cash was sucessfully withdrawed.')
+    else:
+        print('Sorry, there is no cash suitable to your sum.')
 
     return result_cash
 
