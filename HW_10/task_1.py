@@ -273,29 +273,51 @@ def update_banknotes_balance(conn, denomination, new_amount):
     return
 
 
-def withdraw_banknotes(conn, available_list, update_sum):
+def withdraw_banknotes(conn, name, operation, available_banknotes, update_sum):
     cur = conn.cursor()
+    available_banknotes.reverse()
+    count_banknotes = len(available_banknotes)
+    result_list = {'0': 0}
     result_cash = {}
-    sub_list = [update_sum + 1] * (update_sum + 1)
-    
-    result_list = [[] for _ in range(update_sum + 1)]
-    sub_list[0] = 0
 
-    for i in range(0, update_sum + 1):
+    for i in range(0, count_banknotes + 1):
+        banknote_in_list = int(available_banknotes[i])
+        sub_list = {}
 
-        for bnknote in available_list:
-            note = int(bnknote)
-            if i >= note and sub_list[i - note] + 1 < sub_list[i]:
-                sub_list[i] = sub_list[i - note] + 1
-                result_list[i] = result_list[i - note] + [note]
-                
-    if sub_list[update_sum] != update_sum + 1:
-        result_list = result_list[update_sum]
+        for banknotes_sum, banknote in result_list.items():
+            sub_sum = int(banknotes_sum) + banknote_in_list
 
-        for i in result_list:
-            result_cash[i] = result_list.count(i)
+            if sub_sum > update_sum:
+                continue
 
-        check_list = []
+            if sub_sum not in result_list:
+                sub_list[sub_sum] = banknote_in_list
+
+        result_list.update(sub_list)
+
+        if update_sum in result_list:
+            break
+
+    if result_list[update_sum]:
+        used_banknotes = []
+        remained_sum = update_sum
+
+        while remained_sum > 0:
+            used_banknotes.append(result_list[remained_sum])
+            remained_sum = remained_sum - result_list[remained_sum]
+
+        for i in used_banknotes:
+            result_cash[i] = used_banknotes.count(i)
+
+        cur.execute(
+                    "SELECT balance FROM balance WHERE name=?",
+                    (name,)
+                    )
+        old_bal = cur.fetchone()
+        old_bal = old_bal[0]
+        new_bal = old_bal - update_sum
+
+        print('Take your cash: ')
 
         for banknote, count in result_cash.items():
             cur.execute(
@@ -306,29 +328,24 @@ def withdraw_banknotes(conn, available_list, update_sum):
             old_amount = old_amount[0]
             new_amount = old_amount - count
 
-            if old_amount >= count and new_amount >= 0:
-                withdraw = True
-                check_list.append(withdraw)
-            else:
-                withdraw = False
-                check_list.append(withdraw)
-
-    else:
-        print('Sorry, there is no cash suitable to your sum.')
-        print('Change sum multiple to', available_list[0], 'UAH')
-        withdraw = False
-        check_list.append(withdraw)
-    
-    if not False in check_list:
-        print('Take your cash: ')
-        for banknote, count in result_cash.items():
             update_banknotes_balance(conn, banknote, new_amount)
             print(count, 'x', banknote)
-        print('Cash was sucessfully withdrawed.')
+
+        update_balance(conn, (new_bal, name))
+        transaction = (
+                        name,
+                        operation,
+                        old_bal,
+                        update_sum,
+                        new_bal
+                    )
+        create_transactions(conn, transaction)
+        print('Cash was succesfully withdrawed.')
+
     else:
         print('Sorry, there is no cash suitable to your sum.')
 
-    return result_cash
+    return used_banknotes
 
 
 def add_balanse(conn, name):
@@ -390,15 +407,22 @@ def withdraw_balance(conn, name):
     try:
         cur = conn.cursor()
         operation = 'Withdraw'
-        cur.execute(
-                    "SELECT denomination FROM banknotes WHERE amount > ?",
+        cur.execute('''SELECT denomination,
+                              amount
+                       FROM banknotes
+                       WHERE amount > ?
+                    ''',
                     (0,)
-                )
+                    )
         den_available = cur.fetchall()
         available_list = []
+        available_amount = []
+        available_banknotes = []
 
         for den in den_available:
             available_list.append(den[0])
+            available_amount.append(den[1])
+            available_banknotes += [*[den[0]] * den[1]]
 
         print('Available banknotes are:', ', '.join(available_list), 'UAH')
 
@@ -421,18 +445,13 @@ def withdraw_balance(conn, name):
                 if total_sum[0] > update_sum:
                     change = update_sum % 10
                     if change == 0:
-                        new_bal = old_bal - update_sum
-                        update_balance(conn, (new_bal, name))
-
-                        withdraw_banknotes(conn, available_list, update_sum)
-                        transaction = (
-                                    name,
-                                    operation,
-                                    old_bal,
-                                    update_sum,
-                                    new_bal
-                                )
-                        create_transactions(conn, transaction)
+                        withdraw_banknotes(
+                                            conn,
+                                            name,
+                                            operation,
+                                            available_banknotes,
+                                            update_sum
+                                            )
                     else:
                         print('You can withdraw sum only multiple to 10.')
                 else:
