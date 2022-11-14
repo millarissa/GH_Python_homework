@@ -256,13 +256,14 @@ def update_banknotes_balance(conn, denomination, new_amount):
                      WHERE denomination = ?'''
     cur.execute(sql_update, (new_amount, denomination))
 
-    cur.execute("SELECT amount FROM banknotes")
+    cur.execute("SELECT denomination, amount FROM banknotes")
     numbers = cur.fetchall()
 
     total_sum = 0
 
     for num in numbers:
-        total_sum += num[0]
+        summ = int(num[0]) * num[1]
+        total_sum += summ
 
         sql_update_sum = ''' UPDATE balance
                              SET balance = ?
@@ -418,7 +419,7 @@ def withdraw_balance(conn, name):
         available_list = []
         available_amount = []
         available_banknotes = []
-
+        
         for den in den_available:
             available_list.append(den[0])
             available_amount.append(den[1])
@@ -445,6 +446,7 @@ def withdraw_balance(conn, name):
                 if total_sum[0] > update_sum:
                     change = update_sum % 10
                     if change == 0:
+                        new_bal = old_bal - update_sum
                         withdraw_banknotes(
                                             conn,
                                             name,
@@ -521,13 +523,14 @@ def change_banknotes(conn):
             cur.execute(sql_update, (new_amount, banknote))
             print('Amount of banknotes was sucsessfully changed.')
 
-            cur.execute("SELECT amount FROM banknotes")
+            cur.execute("SELECT denomination, amount FROM banknotes")
             numbers = cur.fetchall()
 
             total_sum = 0
 
             for num in numbers:
-                total_sum += num[0]
+                summ = int(num[0]) * num[1]
+                total_sum += summ
 
             sql_update_sum = ''' UPDATE balance
                                  SET balance = ?
