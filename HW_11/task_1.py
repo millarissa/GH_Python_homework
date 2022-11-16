@@ -17,29 +17,29 @@ class Calc:
         self.a = a
         self.b = b
 
-    def method_addition(self):
+    def method_addition(self, a, b):
         """Function for adding two numbers"""
         Calc.last_result = Calc.current_result
-        Calc.current_result = self.a + self.b
+        Calc.current_result = a + b
         return Calc.current_result
 
-    def method_subtraction(self):
+    def method_subtraction(self, a, b):
         """Function for subtraction two numbers"""
         Calc.last_result = Calc.current_result
-        Calc.current_result = self.a - self.b
+        Calc.current_result = a - b
         return Calc.current_result
 
-    def method_multiple(self):
+    def method_multiple(self, a, b):
         """Function for multiple two numbers"""
         Calc.last_result = Calc.current_result
-        Calc.current_result = self.a * self.b
+        Calc.current_result = a * b
         return Calc.current_result
 
-    def method_division(self):
+    def method_division(self, a, b):
         """Function for division two numbers"""
-        if self.b > 0:
+        if b > 0:
             Calc.last_result = Calc.current_result
-            Calc.current_result = self.a / self.b
+            Calc.current_result = a / b
         else:
             print('Oops, division by zero is forbidden, result will be None')
             Calc.current_result = None
@@ -52,28 +52,23 @@ x = Calc(4, 6)
 print('last_result -->', x.last_result, '\n')
 
 print(x.method_multiple.__doc__)
-x = Calc(4, 6)
 print(4, "*", 6)
-x.method_multiple()
+x.method_multiple(4, 6)
 print('last_result -->', x.last_result, '\n')
 
 print(x.method_addition.__doc__)
-x = Calc(1, 1)
 print(1, "+", 1)
-x.method_addition()
+x.method_addition(1, 1)
 print('last_result -->', x.last_result, '\n')
 
-x = Calc(2, 1)
 print(2, "-", 1)
-x.method_subtraction()
+x.method_subtraction(2, 1)
 print('last_result -->', x.last_result, '\n')
 
-x = Calc(6, 0)
-print(6, "/", 4)
-x.method_division()
+print(6, "/", 0)
+x.method_division(6, 0)
 print('last_result -->', x.last_result, '\n')
 
-x = Calc(3, 1)
 print(3, "+", 1)
-x.method_addition()
+x.method_addition(3, 1)
 print('last_result -->', x.last_result)

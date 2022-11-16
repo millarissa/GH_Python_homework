@@ -876,14 +876,14 @@ user = UserOperations()
 admin = AdminOperations()
 withdraw = WithdrawBanknotes()
 
+if __name__ == "__main__":
+    if conn is not None:
+        database.create_users(conn)
+        database.create_balance(conn)
+        database.create_banknotes(conn)
+    else:
+        print("Error! Cannot create the database connection.")
 
-if conn is not None:
-    database.create_users(conn)
-    database.create_balance(conn)
-    database.create_banknotes(conn)
-else:
-    print("Error! Cannot create the database connection.")
-
-with conn:
-    database.insert_users(conn)
-    start.start_menu(conn)
+    with conn:
+        database.insert_users(conn)
+        start.start_menu(conn)
