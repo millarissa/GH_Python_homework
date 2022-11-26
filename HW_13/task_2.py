@@ -13,7 +13,7 @@ class Matrix:
         self.cols = cols
         self.rows = rows
 
-    def fill(self, fill_list):
+    def fill(self):
         col = self.cols
         row = self.rows
         matrix = []
@@ -21,10 +21,7 @@ class Matrix:
         for i in range(col):
             matrix.append([])
             for j in range(row):
-                if fill_list:
-                    matrix[i].append(fill_list[j + row * i])
-                else:
-                    matrix[i].append(0)
+                matrix[i].append((j + 1) + row * i)
 
         return matrix
 
@@ -41,8 +38,7 @@ class Matrix:
             print(i)
 
 
-mat = Matrix(3, 2)
-fill_list = [1, 2, 3, 4, 5, 6]
-matrix = mat.fill(fill_list)
+mat = Matrix(2, 4)
+matrix = mat.fill()
 mat.print_out(matrix)
 mat.transpose(matrix)

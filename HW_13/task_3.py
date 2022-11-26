@@ -29,46 +29,41 @@ class Transaction:
         self._usd_conversion_rate = usd_conversion_rate
         self._description = description
 
-
     @property
     def amount(self):
-        print('Amount:', self._amount)
         return self._amount
 
     @property
     def date(self):
-        print('Date:', self._date)
         return self._date
 
     @property
     def currency(self):
-        print('Currency:', self._currency)
         return self._currency
 
     @property
     def usd_conversion_rate(self):
-        print('USD conversion rate:', self._usd_conversion_rate)
         return self._usd_conversion_rate
 
     @property
     def description(self):
-        if self._description:
-            print('Description:', self._description)
-        else:
-            print('No description provided')
+        if not self._description:
+            return 'No description provided'
         return self._description
 
     def usd(self):
-        course = round(1 / self._usd_conversion_rate, 3)
-        result = self._amount * course
-        print('Amount in USD:', result)
+        if self.currency != 'USD':
+            course = round(1 / self.usd_conversion_rate, 3)
+            result = self.amount * course
+        else:
+            result = self.amount
         return result
 
 
-transaction1 = Transaction(213, '2022.10.05', 'UAH', 37, 'Some money')
-transaction1.amount
-transaction1.currency
-transaction1.date
-transaction1.usd_conversion_rate
-transaction1.description
-transaction1.usd()
+transaction1 = Transaction(213, '2022.10.05', 'UAH', 37)
+print(transaction1.amount)
+print(transaction1.currency)
+print(transaction1.date)
+print(transaction1.usd_conversion_rate)
+print(transaction1.description)
+print('Amount in USD:', transaction1.usd())

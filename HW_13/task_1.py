@@ -11,11 +11,10 @@ class Car:
         self.year = year
 
     def __gt__(self, other):
-        res = ''
         if self.year < other.year:
-            res = 'Car1 is older.'
+            res = True
         else:
-            res = 'Car2 is older'
+            res = False
         return res
 
     def __sub__(self, other):
@@ -24,7 +23,7 @@ class Car:
         return res
 
 
-car1 = Car(2018)
-car2 = Car(2016)
+car1 = Car(2016)
+car2 = Car(2019)
 print(car1 > car2)
 print(car1 - car2)
