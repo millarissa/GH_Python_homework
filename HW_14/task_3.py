@@ -9,6 +9,9 @@ from urllib.parse import urljoin
 class Quote:
     quote_text: str
     author: str
+    author_born_date: str
+    author_born_location: str
+    author_bio: str
     tags: str
 
 
@@ -22,15 +25,10 @@ class QuoteScrapper:
         first_page_soup = BeautifulSoup(page, 'lxml')
         all_quotes = self.get_single_page_items(first_page_soup)
         print('Get data from first page')
-        first_next = first_page_soup.select_one('.pager > .next')
-        if first_next:
-            i = 2
-            next_css = self.get_next_pages(i, all_quotes)
 
-            while next_css:
-                print(f'Get data from page {i}')
-                next_css = self.get_next_pages(i, all_quotes)
-                i += 1
+        for i in range(2, 11):
+            print(f'Get data from page {i}')
+            self.get_next_pages(i, all_quotes)
 
         return all_quotes
 
@@ -40,20 +38,45 @@ class QuoteScrapper:
         next_page = requests.get(next_url).content
         page_soup = BeautifulSoup(next_page, 'lxml')
         all_quotes.extend(self.get_single_page_items(page_soup))
-        next_css = page_soup.select_one('.pager > .next')
-        return next_css
+        return all_quotes
 
     def parse_single_item(self, quote_soup: BeautifulSoup):
+        author_about = quote_soup.select_one('span a')['href']
+
+        about_page_url = urljoin(self.BASE_URL, author_about)
+        about_page = requests.get(about_page_url).content
+        about_page_soup = BeautifulSoup(about_page, 'lxml')
+
+        quote_text = quote_soup.select_one('.text').text.replace('“', '').replace('”', '')
+        author = quote_soup.select_one('.author').text
+
+        if about_page_soup.select_one('.author-born-date'):
+            author_born_date = about_page_soup.select_one('.author-born-date').text
+        else:
+            author_born_date = 'Birth date is unknown'
+
+        if about_page_soup.select_one('.author-born-location'):
+            author_born_location = about_page_soup.select_one('.author-born-location').text.replace('in ', '')
+        else:
+            author_born_location = 'Birth location is unknown'
+
+        if about_page_soup.select_one('.author-description'):
+            author_bio = about_page_soup.select_one('.author-description').text.replace('\n        ', '')
+        else:
+            author_bio = 'Biography is unknown'
+
         if quote_soup.select_one('.tags > .keywords')['content']:
-            return Quote(
-                quote_text=quote_soup.select_one('.text').text.replace('“', '').replace('”', ''),
-                author=quote_soup.select_one('.author').text,
-                tags=quote_soup.select_one('.tags > .keywords')['content']
-            )
+            tags = quote_soup.select_one('.tags > .keywords')['content']
+        else:
+            tags = 'No tags'
+
         return Quote(
-            quote_text=quote_soup.select_one('.text').text.replace('“', '').replace('”', ''),
-            author=quote_soup.select_one('.author').text,
-            tags='No tags'
+                quote_text=quote_text,
+                author=author,
+                author_born_date=author_born_date,
+                author_born_location=author_born_location,
+                author_bio=author_bio,
+                tags=tags
         )
 
     def get_single_page_items(self, page_soup: BeautifulSoup):

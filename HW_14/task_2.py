@@ -1,6 +1,6 @@
 import requests
 import datetime
-from datetime import date, timedelta, datetime
+from datetime import timedelta, datetime
 
 
 class MoneyCourse:
@@ -16,8 +16,15 @@ class MoneyCourse:
                 print('Course for', user_curr, 'to UAH at', user_date, ':')
                 for rate_num in range(len(rates)):
                     if ('currency', user_curr) in rates[rate_num].items():
-                        print('Buy:', rates[rate_num]['purchaseRate'])
-                        print('Sale:', rates[rate_num]['saleRate'])
+                        if 'purchaseRate' in rates[rate_num]:
+                            print('Buy:', rates[rate_num]['purchaseRate'])
+                        else:
+                            print('Buy:', rates[rate_num]['purchaseRateNB'])
+
+                        if 'saleRate' in rates[rate_num]:
+                            print('Sale:', rates[rate_num]['saleRate'])
+                        else:
+                            print('Sale:', rates[rate_num]['saleRateNB'])
             else:
                 print('Same currency as base.')
         else:
@@ -60,11 +67,11 @@ if __name__ == '__main__':
     if operation_num == 1:
         user_date = input('Enter date (dd.mm.yyyy): ')
         user_curr = input('Enter currency: ')
-        course_by_date = course.money_course_single_date(user_date, user_curr)
+        course.money_course_single_date(user_date, user_curr)
     elif operation_num == 2:
         start_date = input('Enter start date (dd.mm.yyyy): ')
         end_date = input('Enter end date (dd.mm.yyyy): ')
         user_curr = input('Enter currency: ')
-        course_by_interval = course.money_course_date_interval(start_date, end_date, user_curr)
+        course.money_course_date_interval(start_date, end_date, user_curr)
     else:
         print('Wrong operation number.')

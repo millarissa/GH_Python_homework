@@ -2,12 +2,12 @@
 Банкомат
 """
 
-
+import random
 import sqlite3
 from sqlite3 import Error
-from tabulate import tabulate
-import random
+
 import requests
+from tabulate import tabulate
 
 
 class DataBaseOperations:
