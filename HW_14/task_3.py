@@ -1,8 +1,9 @@
 import csv
-import requests
-from bs4 import BeautifulSoup
 from dataclasses import dataclass, fields, astuple
 from urllib.parse import urljoin
+
+import requests
+from bs4 import BeautifulSoup
 
 
 @dataclass
