@@ -1,5 +1,6 @@
 import csv
 import random
+import time
 from dataclasses import dataclass, fields, astuple
 from urllib.parse import urljoin
 
@@ -47,25 +48,37 @@ class DomainScrapper:
             headers = {'User-Agent': user_agent}
 
             url = self.request_url
-            proxies = {'http': 'http://137.184.197.190:80'}
+            proxies = {'http': 'http://208.109.191.161:80'}
             page = session.get(url, proxies=proxies, headers=headers)
 
             page_content = page.content
             first_page_soup = BeautifulSoup(page_content, 'lxml')
 
             all_domains = self.get_single_page_items(first_page_soup)
+            print('Domains from page 1')
+            time.sleep(random.randint(24, 48))
 
-            """for i in range(2, 11):
-                self.get_next_pages(i, all_domains)"""
+            listing = list(range(271))
+            for i in listing[25::25]:
+                print(f'Domains listing: {i}')
+                self.get_next_pages(i, all_domains)
+                time.sleep(random.randint(24, 48))
 
             return all_domains
 
     def get_next_pages(self, i, all_domains):
-        page_url = 'page/' + str(i)
-        next_url = urljoin(self.BASE_URL, page_url)
+        self.session.get(self.BASE_URL)
+
+        params = {'start': i}
+        url = self.request_url
+        url_with_params = requests.get(url, params)
+        next_url = url_with_params.url + '#listing'
         next_page = requests.get(next_url).content
         page_soup = BeautifulSoup(next_page, 'lxml')
+
         all_domains.extend(self.get_single_page_items(page_soup))
+        time.sleep(random.randint(24, 48))
+
         return all_domains
 
     def get_single_page_items(self, page_soup: BeautifulSoup):
@@ -73,10 +86,19 @@ class DomainScrapper:
         return [self.parse_single_item(domain_soup) for domain_soup in domains]
 
     def parse_single_item(self, domain_soup: BeautifulSoup):
+        self.session.get(self.BASE_URL)
+
         field_domain = domain_soup.select_one('.field_domain a').text
         field_bl = domain_soup.select_one('.field_bl a').text
         field_domainpop = int(domain_soup.select_one('.field_domainpop a').text)
-        field_abirth = int(domain_soup.select_one('.field_abirth a').text)
+
+        if domain_soup.select_one('.field_abirth a'):
+            field_abirth = int(domain_soup.select_one('.field_abirth a').text)
+        else:
+            field_abirth = '-'
+
+        time.sleep(random.randint(24, 48))
+
         field_aentries = int(domain_soup.select_one('.field_aentries a').text)
 
         if domain_soup.select_one('.field_dmoz a'):
@@ -87,10 +109,16 @@ class DomainScrapper:
         field_statuscom = domain_soup.select_one('.field_statuscom a span').text
         field_statusnet = domain_soup.select_one('.field_statusnet a span').text
         field_statusorg = domain_soup.select_one('.field_statusorg a span').text
+        time.sleep(random.randint(24, 48))
+
         field_statustld_reg = int(domain_soup.select_one('.field_statustld_registered').text)
+        time.sleep(random.randint(24, 48))
+
         field_related_cnobi = domain_soup.select_one('.field_related_cnobi').text
         field_price = domain_soup.select_one('.field_price a').text
         field_endtime = domain_soup.select_one('.field_endtime a').text
+
+        time.sleep(random.randint(24, 48))
 
         return Domain(
             field_domain=field_domain,
