@@ -33,58 +33,60 @@ class DomainScrapper:
 
     def __init__(self):
         self.session = requests.Session()
-        self.request_url = urljoin(self.BASE_URL, self.CATEGORY_URL)
+        self.category_url = urljoin(self.BASE_URL, self.CATEGORY_URL)
 
     def get_items(self):
-        with requests.Session() as session:
-            user_agents = [
-                'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36',
-                'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/92.0.4515.107 Safari/537.36',
-                'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/90.0.4430.212 Safari/537.36',
-                'Mozilla/5.0 (iPhone; CPU iPhone OS 12_2 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148',
-                'Mozilla/5.0 (Linux; Android 11; SM-G960U) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/89.0.4389.72 Mobile Safari/537.36'
-            ]
-            user_agent = random.choice(user_agents)
-            headers = {'User-Agent': user_agent}
+        user_agents = [
+            'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36',
+            'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/92.0.4515.107 Safari/537.36',
+            'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/90.0.4430.212 Safari/537.36',
+            'Mozilla/5.0 (iPhone; CPU iPhone OS 12_2 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148',
+            'Mozilla/5.0 (Linux; Android 11; SM-G960U) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/89.0.4389.72 Mobile Safari/537.36'
+        ]
+        user_agent = random.choice(user_agents)
+        headers = {'User-Agent': user_agent}
 
-            url = self.request_url
+        proxy_https = [
+            'https://208.82.61.66:3128',
+            'https://49.0.2.242:8090',
+            'https://190.61.88.147:8080',
+            'https://208.82.61.13:3128',
+            'https://45.152.188.16:3128',
+            'https://208.82.61.12:3128',
+        ]
+        https = random.choice(proxy_https)
+        proxies = {'https': https}
 
-            proxy_https = [
-                'https://208.82.61.66:3128',
-                'https://49.0.2.242:8090',
-                'https://190.61.88.147:8080',
-                'https://208.82.61.13:3128',
-                'https://45.152.188.16:3128',
-                'https://208.82.61.12:3128',
-            ]
-            https = random.choice(proxy_https)
+        #задаю хедер і проксі
+        self.session.proxies.update(proxies)
+        self.session.headers.update(headers)
 
-            proxies = {'https': https}
-            page = session.get(url, proxies=proxies, headers=headers)
+        self.session.get(self.BASE_URL) #запит на головну сторінку
+        time.sleep(random.randint(24, 48))
+        self.session.get(self.category_url) #запит на сторінку категорії
+        time.sleep(random.randint(24, 48))
 
-            page_content = page.content
-            first_page_soup = BeautifulSoup(page_content, 'lxml')
+        page_category = self.session.get(self.category_url)
+        page_content = page_category.content
+        first_page_soup = BeautifulSoup(page_content, 'lxml')
 
-            all_domains = self.get_single_page_items(first_page_soup)
-            print('Domains from page 1')
+        all_domains = self.get_single_page_items(first_page_soup) #прохожу по першій сторінці
+        print('Domains from page 1')
+        time.sleep(random.randint(24, 48))
+
+        listing = list(range(271))
+        for i in listing[25::25]:
+            print(f'Domains listing: {i}')
+            self.get_next_pages(i, all_domains) #ітерація по іншим сторінкам
             time.sleep(random.randint(24, 48))
 
-            listing = list(range(271))
-            for i in listing[25::25]:
-                print(f'Domains listing: {i}')
-                self.get_next_pages(i, all_domains)
-                time.sleep(random.randint(24, 48))
-
-            return all_domains
+        return all_domains
 
     def get_next_pages(self, i, all_domains):
-        self.session.get(self.BASE_URL)
-
         params = {'start': i}
-        url = self.request_url
-        url_with_params = requests.get(url, params)
+        url_with_params = self.session.get(self.category_url, params)
         next_url = url_with_params.url + '#listing'
-        next_page = requests.get(next_url).content
+        next_page = self.session.get(next_url).content
         page_soup = BeautifulSoup(next_page, 'lxml')
 
         all_domains.extend(self.get_single_page_items(page_soup))
@@ -97,8 +99,6 @@ class DomainScrapper:
         return [self.parse_single_item(domain_soup) for domain_soup in domains]
 
     def parse_single_item(self, domain_soup: BeautifulSoup):
-        self.session.get(self.BASE_URL)
-
         field_domain = domain_soup.select_one('.field_domain a').text
         field_bl = domain_soup.select_one('.field_bl a').text
         field_domainpop = int(domain_soup.select_one('.field_domainpop a').text)
