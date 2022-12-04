@@ -48,7 +48,18 @@ class DomainScrapper:
             headers = {'User-Agent': user_agent}
 
             url = self.request_url
-            proxies = {'http': 'http://208.109.191.161:80'}
+
+            proxy_https = [
+                'https://208.82.61.66:3128',
+                'https://49.0.2.242:8090',
+                'https://190.61.88.147:8080',
+                'https://208.82.61.13:3128',
+                'https://45.152.188.16:3128',
+                'https://208.82.61.12:3128',
+            ]
+            https = random.choice(proxy_https)
+
+            proxies = {'https': https}
             page = session.get(url, proxies=proxies, headers=headers)
 
             page_content = page.content
