@@ -47,34 +47,40 @@ class DomainScrapper:
         headers = {'User-Agent': user_agent}
 
         proxy_https = [
-            'https://208.82.61.66:3128',
-            'https://49.0.2.242:8090',
-            'https://190.61.88.147:8080',
-            'https://208.82.61.13:3128',
-            'https://45.152.188.16:3128',
-            'https://208.82.61.12:3128',
+            'http://208.82.61.66:3128',
+            'http://49.0.2.242:8090',
+            'http://190.61.88.147:8080',
+            'http://208.82.61.13:3128',
+            'http://45.152.188.16:3128',
+            'http://208.82.61.12:3128',
         ]
         https = random.choice(proxy_https)
-        proxies = {'https': https}
+        proxies = {'http': https}
 
         #задаю хедер і проксі
         self.session.proxies.update(proxies)
         self.session.headers.update(headers)
 
+        print('Start scrapping')
+
+        print('Go to main page')
         self.session.get(self.BASE_URL) #запит на головну сторінку
-        time.sleep(random.randint(24, 48))
+        time.sleep(random.randint(5, 20))
+
+        print('Go to category page')
         self.session.get(self.category_url) #запит на сторінку категорії
-        time.sleep(random.randint(24, 48))
+        time.sleep(random.randint(5, 20))
 
         page_category = self.session.get(self.category_url)
         page_content = page_category.content
         first_page_soup = BeautifulSoup(page_content, 'lxml')
 
+        print('Collecting domains from page 1')
         all_domains = self.get_single_page_items(first_page_soup) #прохожу по першій сторінці
-        print('Domains from page 1')
         time.sleep(random.randint(24, 48))
 
-        listing = list(range(271))
+        print('Start listing')
+        listing = list(range(100))
         for i in listing[25::25]:
             print(f'Domains listing: {i}')
             self.get_next_pages(i, all_domains) #ітерація по іншим сторінкам
@@ -84,7 +90,7 @@ class DomainScrapper:
 
     def get_next_pages(self, i, all_domains):
         params = {'start': i}
-        url_with_params = self.session.get(self.category_url, params)
+        url_with_params = self.session.get(self.category_url, params=params)
         next_url = url_with_params.url + '#listing'
         next_page = self.session.get(next_url).content
         page_soup = BeautifulSoup(next_page, 'lxml')
@@ -99,6 +105,7 @@ class DomainScrapper:
         return [self.parse_single_item(domain_soup) for domain_soup in domains]
 
     def parse_single_item(self, domain_soup: BeautifulSoup):
+        print('Take domain')
         field_domain = domain_soup.select_one('.field_domain a').text
         field_bl = domain_soup.select_one('.field_bl a').text
         field_domainpop = int(domain_soup.select_one('.field_domainpop a').text)
@@ -108,7 +115,7 @@ class DomainScrapper:
         else:
             field_abirth = '-'
 
-        time.sleep(random.randint(24, 48))
+        time.sleep(random.randint(5, 15))
 
         field_aentries = int(domain_soup.select_one('.field_aentries a').text)
 
@@ -120,16 +127,15 @@ class DomainScrapper:
         field_statuscom = domain_soup.select_one('.field_statuscom a span').text
         field_statusnet = domain_soup.select_one('.field_statusnet a span').text
         field_statusorg = domain_soup.select_one('.field_statusorg a span').text
-        time.sleep(random.randint(24, 48))
-
         field_statustld_reg = int(domain_soup.select_one('.field_statustld_registered').text)
-        time.sleep(random.randint(24, 48))
+
+        time.sleep(random.randint(3, 10))
 
         field_related_cnobi = domain_soup.select_one('.field_related_cnobi').text
         field_price = domain_soup.select_one('.field_price a').text
         field_endtime = domain_soup.select_one('.field_endtime a').text
 
-        time.sleep(random.randint(24, 48))
+        time.sleep(random.randint(4, 14))
 
         return Domain(
             field_domain=field_domain,
