@@ -60,7 +60,7 @@ class DataBaseOperations:
     def _check_items(self, item_id):
         all_rosetka_items = []
         for rosetka_item in self.rosetka.get_item_data(item_id):
-            print(rosetka_item)
+            #print(rosetka_item)
             if type(rosetka_item) == dict:
                 all_rosetka_items.append(list(rosetka_item.values()))
         return all_rosetka_items
@@ -69,6 +69,9 @@ class DataBaseOperations:
         inserted_items = []
         items_id_list = self.items_id
         for item_id in items_id_list:
+            print('item_id', item_id)
+            ros_item = self.rosetka.get_item_data(item_id)
+            print('ros_item', ros_item)
             inserted_items = self._check_items(item_id)
         return inserted_items
 

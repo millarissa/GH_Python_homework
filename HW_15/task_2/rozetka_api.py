@@ -9,20 +9,18 @@ class RozetkaAPI:
 
     def get_item_data(self, item_id):
         item_data = list()
-        if self._get_available_items(item_id):
-            for item in self._get_available_items(item_id):
-                item_info = item['data']
-                item_data.append(dict(
-                    item_id=item_info['id'],
-                    title=item_info['title'],
-                    href=item_info['href'],
-                    price=item_info['price'],
-                    old_price=item_info['old_price'],
-                    brand=item_info['brand'],
-                    category=item_info['last_category']['title']
-                ))
-        else:
-            item_data.append('No data available')
+        available_item = self._check_available_items(item_id)
+        item_info = available_item['data']
+        item_data.append(dict(
+            item_id=item_info['id'],
+            title=item_info['title'],
+            href=item_info['href'],
+            price=item_info['price'],
+            old_price=item_info['old_price'],
+            brand=item_info['brand'],
+            category=item_info['last_category']['title']
+        ))
+
         return item_data
 
     def _get_response(self, item_id):
@@ -39,6 +37,7 @@ class RozetkaAPI:
 
     def _get_available_items(self, item_id):
         available_items = []
-        if self._check_available_items(item_id):
-            available_items.append(self._check_available_items(item_id))
+        checked_item = self._check_available_items(item_id)
+        if checked_item:
+            available_items.append(checked_item)
         return available_items
