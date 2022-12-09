@@ -65,11 +65,11 @@ class DomainScrapper:
 
         print('Go to main page')
         self.session.get(self.BASE_URL) #запит на головну сторінку
-        time.sleep(random.randint(5, 20))
+        time.sleep(random.randint(2, 5))
 
         print('Go to category page')
         self.session.get(self.category_url) #запит на сторінку категорії
-        time.sleep(random.randint(5, 20))
+        time.sleep(random.randint(2, 5))
 
         page_category = self.session.get(self.category_url)
         page_content = page_category.content
@@ -77,14 +77,13 @@ class DomainScrapper:
 
         print('Collecting domains from page 1')
         all_domains = self.get_single_page_items(first_page_soup) #прохожу по першій сторінці
-        time.sleep(random.randint(24, 48))
+        time.sleep(random.randint(10, 20))
 
         print('Start listing')
         listing = list(range(100))
         for i in listing[25::25]:
             print(f'Domains listing: {i}')
             self.get_next_pages(i, all_domains) #ітерація по іншим сторінкам
-            time.sleep(random.randint(24, 48))
 
         return all_domains
 
@@ -96,7 +95,7 @@ class DomainScrapper:
         page_soup = BeautifulSoup(next_page, 'lxml')
 
         all_domains.extend(self.get_single_page_items(page_soup))
-        time.sleep(random.randint(24, 48))
+        time.sleep(random.randint(10, 20))
 
         return all_domains
 
@@ -115,8 +114,6 @@ class DomainScrapper:
         else:
             field_abirth = '-'
 
-        time.sleep(random.randint(5, 15))
-
         field_aentries = int(domain_soup.select_one('.field_aentries a').text)
 
         if domain_soup.select_one('.field_dmoz a'):
@@ -129,13 +126,9 @@ class DomainScrapper:
         field_statusorg = domain_soup.select_one('.field_statusorg a span').text
         field_statustld_reg = int(domain_soup.select_one('.field_statustld_registered').text)
 
-        time.sleep(random.randint(3, 10))
-
         field_related_cnobi = domain_soup.select_one('.field_related_cnobi').text
         field_price = domain_soup.select_one('.field_price a').text
         field_endtime = domain_soup.select_one('.field_endtime a').text
-
-        time.sleep(random.randint(4, 14))
 
         return Domain(
             field_domain=field_domain,
@@ -154,7 +147,7 @@ class DomainScrapper:
         )
 
     def write_items_to_csv(self, domains: [Domain]):
-        with open(self.DOMAIN_OUTPUT_CSV_PATH, 'w', encoding='utf-8') as file:
+        with open(self.DOMAIN_OUTPUT_CSV_PATH, 'w', newline='', encoding='utf-8') as file:
             writer = csv.writer(file)
             writer.writerow(self.DOMAIN_FIELDS)
             writer.writerows([astuple(domain) for domain in domains])

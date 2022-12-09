@@ -8,31 +8,21 @@ from rozetka_api import RozetkaAPI
 
 class CsvOperations:
 
-    def __init__(self, path_to_csv):
-        self.path_to_csv = path_to_csv
-
     def read_csv_file(self):
-        with open(self.path_to_csv, newline='') as csvfile:
+        with open('rosetka_items.csv', newline='') as csvfile:
             reader = csv.DictReader(csvfile)
-            all_rosetka_items = []
+            items_id_list = []
             for row in reader:
                 item_id = row['item_id']
-                rosetka = RozetkaAPI(item_id)
-                for rosetka_item in rosetka.get_item_data():
-                    print(rosetka_item)
-                    if type(rosetka_item) == dict:
-                        all_rosetka_items.append(list(rosetka_item.values()))
-            return all_rosetka_items
+                items_id_list.append(item_id)
+            return items_id_list
 
 
 class DataBaseOperations:
-    def __init__(self, conn):
-        self.conn = conn
-
-    def create_connection(self, db_file):
+    def create_connection(self):
         conn = None
         try:
-            conn = sqlite3.connect(db_file)
+            conn = sqlite3.connect('rosetka.db')
             return conn
         except Error as e:
             print(e)
@@ -41,7 +31,8 @@ class DataBaseOperations:
 
     def _create_table(self, create_table_sql):
         try:
-            c = self.conn.cursor()
+            conn = self.create_connection()
+            c = conn.cursor()
             c.execute(create_table_sql)
         except Error as e:
             print(e)
@@ -63,10 +54,28 @@ class DataBaseOperations:
         self._create_table(sql)
         return
 
-    def insert_items(self, file_result_list):
+    def _check_items(self, item_id):
+        all_rosetka_items = []
+        rosetka = RozetkaAPI(item_id)
+        for rosetka_item in rosetka.get_item_data():
+            print(rosetka_item)
+            if type(rosetka_item) == dict:
+                all_rosetka_items.append(list(rosetka_item.values()))
+        return all_rosetka_items
+
+    def _get_data_to_insert(self):
+        inserted_items = []
+        items_id_list = CsvOperations().read_csv_file()
+        for item_id in items_id_list:
+            inserted_items = self._check_items(item_id)
+        return inserted_items
+
+    def insert_items(self):
+        file_result_list = self._get_data_to_insert()
+        conn = self.create_connection()
         self._create_items_table()
 
-        cur = self.conn.cursor()
+        cur = conn.cursor()
         sql = ''' INSERT OR IGNORE INTO rosetka_items(
                                             item_id,
                                             title,
@@ -80,6 +89,6 @@ class DataBaseOperations:
         for item in file_result_list:
             cur.execute(sql, item)
 
-        self.conn.commit()
+        conn.commit()
         return cur.lastrowid
 
