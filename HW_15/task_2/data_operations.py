@@ -7,7 +7,6 @@ from rozetka_api import RozetkaAPI
 
 
 class CsvOperations:
-
     def read_csv_file(self):
         with open('rosetka_items.csv', newline='') as csvfile:
             reader = csv.DictReader(csvfile)
@@ -19,6 +18,10 @@ class CsvOperations:
 
 
 class DataBaseOperations:
+    def __init__(self):
+        self.items_id = CsvOperations().read_csv_file()
+        self.rosetka = RozetkaAPI()
+
     def create_connection(self):
         conn = None
         try:
@@ -56,8 +59,7 @@ class DataBaseOperations:
 
     def _check_items(self, item_id):
         all_rosetka_items = []
-        rosetka = RozetkaAPI(item_id)
-        for rosetka_item in rosetka.get_item_data():
+        for rosetka_item in self.rosetka.get_item_data(item_id):
             print(rosetka_item)
             if type(rosetka_item) == dict:
                 all_rosetka_items.append(list(rosetka_item.values()))
@@ -65,7 +67,7 @@ class DataBaseOperations:
 
     def _get_data_to_insert(self):
         inserted_items = []
-        items_id_list = CsvOperations().read_csv_file()
+        items_id_list = self.items_id
         for item_id in items_id_list:
             inserted_items = self._check_items(item_id)
         return inserted_items
@@ -91,4 +93,3 @@ class DataBaseOperations:
 
         conn.commit()
         return cur.lastrowid
-
