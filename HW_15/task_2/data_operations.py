@@ -52,18 +52,13 @@ class DataBaseOperations:
         self._create_table(sql)
         return
 
-    def _get_data_to_insert(self, item_id, rosetka_item_data):
+    def _get_data_to_insert(self, rosetka_item_values):
         inserted_items = []
-        if rosetka_item_data:
-            item_dict = rosetka_item_data[0]
-            print(item_dict)
-            inserted_items.append(list(item_dict.values()))
-        else:
-            print('For', item_id, 'no data available')
+        inserted_items.append(list(rosetka_item_values.values()))
         return inserted_items
 
-    def insert_items(self, item_id, rosetka_item_data):
-        file_result_list = self._get_data_to_insert(item_id, rosetka_item_data)
+    def insert_items(self, rosetka_item_values):
+        file_result_list = self._get_data_to_insert(rosetka_item_values)
         conn = self.create_connection()
         self._create_items_table()
 

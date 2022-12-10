@@ -13,4 +13,11 @@ if __name__ == '__main__':
     rosetka_item_list = []
     for item_id in list_of_ids:
         rosetka_item_data = rozetka.get_item_data(item_id)
-        database.insert_items(item_id, rosetka_item_data)
+        if rosetka_item_data:
+            rosetka_item_values = rosetka_item_data[0]
+            print(rosetka_item_values)
+            database.insert_items(rosetka_item_values)
+        else:
+            print('For', item_id, 'no data available')
+
+
