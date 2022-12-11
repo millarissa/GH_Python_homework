@@ -6,11 +6,12 @@ class RozetkaAPI:
         self.request_url = 'https://rozetka.com.ua/api/product-api/v4/goods/get-main'
 
     def get_item_data(self, item_id):
-        item_data = list()
+        item_data = dict()
         available_item = self._get_available_items(item_id)
-        if type(available_item) == dict:
+
+        if available_item:
             item_info = available_item['data']
-            item_data.append(dict(
+            item_data = dict(
                 item_id=item_info['id'],
                 title=item_info['title'],
                 href=item_info['href'],
@@ -18,7 +19,7 @@ class RozetkaAPI:
                 old_price=item_info['old_price'],
                 brand=item_info['brand'],
                 category=item_info['last_category']['title']
-            ))
+            )
 
         return item_data
 
