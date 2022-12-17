@@ -90,3 +90,18 @@ ROBOTSTXT_OBEY = True
 # Set settings whose default value is deprecated to a future-proof value
 REQUEST_FINGERPRINTER_IMPLEMENTATION = '2.7'
 TWISTED_REACTOR = 'twisted.internet.asyncioreactor.AsyncioSelectorReactor'
+
+FEEDS = {
+    '%(cat_id)s_products.csv': {
+        'format': 'csv',
+        'fields': [
+                "item_id",
+                "title",
+                "price",
+                "old_price",
+                "brand",
+                "category",
+                "href"
+        ]
+    }
+}
