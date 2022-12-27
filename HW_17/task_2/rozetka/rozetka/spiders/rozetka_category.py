@@ -8,18 +8,15 @@ class RozetkaCategorySpider(scrapy.Spider):
     name = 'rozetka_category'
     allowed_domains = ['rozetka.com.ua']
     BASE_URL = 'https://rozetka.com.ua/ua'
-    cat_id = input('Enter category ID: ')
+    cat_name = 'keybords-mice/c80255'
+    cat_id = cat_name.split('/')[-1]
 
     def start_requests(self):
-        cat_name = 'keybords-mice'
-        if self.cat_id is not None:
-            self.BASE_URL = f'{self.BASE_URL}/{cat_name}/{self.cat_id}'
-            yield scrapy.Request(
-                url=self.BASE_URL,
-                callback=self.parse_pages
-            )
-        else:
-            raise CloseSpider('Enter category id')
+        self.BASE_URL = f'{self.BASE_URL}/{self.cat_name}'
+        yield scrapy.Request(
+            url=self.BASE_URL,
+            callback=self.parse_pages
+        )
 
     def parse_pages(self, response):
         yield self.parse(response)
