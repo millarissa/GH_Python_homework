@@ -67,8 +67,10 @@ class RobotCreator:
 
     def close_popup(self):
         self._wait_for_element('div.modal-content')
-        close_button = self.driver.find_element(By.CLASS_NAME, 'btn-dark')
-        close_button.click()
+        self._wait_for_element('button.btn-dark')
+        wait = WebDriverWait(self.driver, 10)
+        close_button = wait.until(EC.visibility_of_any_elements_located((By.CLASS_NAME, 'btn-dark')))
+        close_button[0].click()
         return
 
     def fill_head(self, head_num):
@@ -138,13 +140,8 @@ class RobotCreator:
         another.click()
         return
 
-    def _wait_for_element(self, selector, by=By.CSS_SELECTOR, timeout=1):
+    def _wait_for_element(self, selector, by=By.CSS_SELECTOR, timeout=10):
         cond = EC.presence_of_element_located((by, selector))
-        element = WebDriverWait(self.driver, timeout).until(cond)
-        return element
-
-    def _wait_for_clickable(self, selector, by=By.CSS_SELECTOR, timeout=1):
-        cond = EC.element_to_be_clickable((by, selector))
         element = WebDriverWait(self.driver, timeout).until(cond)
         return element
 
