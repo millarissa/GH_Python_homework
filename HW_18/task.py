@@ -8,7 +8,7 @@ from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.by import By
-from selenium.common.exceptions import NoSuchElementException, ElementNotInteractableException
+from selenium.common.exceptions import NoSuchElementException
 from selenium.webdriver.support.ui import Select
 
 
@@ -37,10 +37,11 @@ class RobotCreator:
                 self.order()
                 alert = self.check_if_error()
                 if alert:
+                    self.alert_click()
                     self.order()
-                else:
-                    self.rename_robot_to_receipt()
-                    self.order_another()
+
+                self.rename_robot_to_receipt()
+                self.order_another()
 
     def clear_directories(self):
         if Path('input/orders.csv').exists():
@@ -68,7 +69,7 @@ class RobotCreator:
     def close_popup(self):
         self._wait_for_element('div.modal-content')
         self._wait_for_element('button.btn-dark')
-        wait = WebDriverWait(self.driver, 10)
+        wait = WebDriverWait(self.driver, 20)
         close_button = wait.until(EC.visibility_of_any_elements_located((By.CLASS_NAME, 'btn-dark')))
         close_button[0].click()
         return
@@ -110,6 +111,8 @@ class RobotCreator:
 
     def save_preview_image(self):
         self._wait_for_element('div#robot-preview-image')
+        wait = WebDriverWait(self.driver, 20)
+        wait.until(EC.visibility_of_all_elements_located((By.CSS_SELECTOR, '#robot-preview-image img')))
         preview_image = self.driver.find_element(By.ID, 'robot-preview-image')
         Path('output').mkdir(parents=True, exist_ok=True)
         screenshot_path = 'output'
@@ -117,8 +120,14 @@ class RobotCreator:
         return
 
     def order(self):
-        order = self.driver.find_element(By.ID, 'order')
+        self._wait_for_element('button#order')
+        order = self.driver.find_element(By.CSS_SELECTOR, 'button#order')
         order.click()
+        return
+
+    def alert_click(self):
+        alert = self.driver.find_element(By.CLASS_NAME, 'alert-danger')
+        alert.click()
         return
 
     def check_if_error(self):
@@ -140,7 +149,7 @@ class RobotCreator:
         another.click()
         return
 
-    def _wait_for_element(self, selector, by=By.CSS_SELECTOR, timeout=10):
+    def _wait_for_element(self, selector, by=By.CSS_SELECTOR, timeout=30):
         cond = EC.presence_of_element_located((by, selector))
         element = WebDriverWait(self.driver, timeout).until(cond)
         return element
@@ -176,11 +185,13 @@ class RobotCreator:
             'excludeSwitches', ['enable-automation']
         )
 
+        download_dir = str(Path(__file__).parent / 'input')
+
         chrome_options.add_experimental_option(
             'prefs', {
                 'profile.default_content_setting_values.notifications': 2,
                 'profile.default_content_settings.popups': 0,
-                'download.default_directory': r'E:\Programs\Python\HW_18\input',
+                'download.default_directory': download_dir,
                 'prompt_for_download': 'false',
                 'directory_upgrade': True
             }
