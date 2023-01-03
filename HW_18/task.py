@@ -36,18 +36,17 @@ class RobotCreator:
                 self.preview()
                 self.save_preview_image()
                 self.order()
-                alert = self.check_if_error()
-                if not alert:
-                    self.rename_robot_to_receipt()
-                    self.order_another()
-                else:
-                    self.alert_click()
-                    self.order()
-                    still_alert = self.check_if_error()
-                    if still_alert:
+                for i in range(4):
+                    if not self.check_if_error():
+                        break
+                    else:
+                        self.alert_click()
                         self.order()
-                    self.rename_robot_to_receipt()
-                    self.order_another()
+                else:
+                    print('Something wrong with this robot.')
+
+                self.rename_robot_to_receipt()
+                self.order_another()
 
     def clear_directories(self):
         if Path('input/orders.csv').exists():
