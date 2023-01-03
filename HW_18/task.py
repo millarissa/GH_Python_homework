@@ -10,6 +10,7 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.by import By
 from selenium.common.exceptions import NoSuchElementException
 from selenium.webdriver.support.ui import Select
+from selenium.webdriver.common.action_chains import ActionChains
 
 
 class RobotCreator:
@@ -36,12 +37,17 @@ class RobotCreator:
                 self.save_preview_image()
                 self.order()
                 alert = self.check_if_error()
-                if alert:
+                if not alert:
+                    self.rename_robot_to_receipt()
+                    self.order_another()
+                else:
                     self.alert_click()
                     self.order()
-
-                self.rename_robot_to_receipt()
-                self.order_another()
+                    still_alert = self.check_if_error()
+                    if still_alert:
+                        self.order()
+                    self.rename_robot_to_receipt()
+                    self.order_another()
 
     def clear_directories(self):
         if Path('input/orders.csv').exists():
@@ -122,6 +128,8 @@ class RobotCreator:
     def order(self):
         self._wait_for_element('button#order')
         order = self.driver.find_element(By.CSS_SELECTOR, 'button#order')
+        actions = ActionChains(self.driver)
+        actions.move_to_element(order).perform()
         order.click()
         return
 
