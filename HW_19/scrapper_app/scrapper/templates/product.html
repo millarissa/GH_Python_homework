@@ -1,0 +1,40 @@
+{% extends "add_products.html" %}
+
+{% block content %}
+<h1>Product details:</h1>
+
+<div class="container">
+    <div class="product_item">
+        <div class="item_id">
+            <span class="label">ID:</span>
+            {{ product.item_id }}
+        </div>
+        <div class="title">
+            <span class="label">Product title:</span>
+            {{ product.title }}
+        </div>
+        <div class="link">
+            <span class="label">Link to item:</span>
+            <a href="{{product.href}}">{{ product.href }}</a>
+        </div>
+        <div class="old_price">
+            <span class="label">Old price:</span>
+            {{ product.old_price }}
+        </div>
+        <div class="current_price">
+            <span class="label">Current price:</span>
+            {{ product.current_price }}
+        </div>
+        <div class="brand">
+            <span class="label">Brand:</span>
+            {{ product.brand }}
+        </div>
+        <div class="category">
+            <span class="label">Category:</span>
+            {{ product.category }}
+        </div>
+    </div>
+
+</div>
+
+{% endblock content %}

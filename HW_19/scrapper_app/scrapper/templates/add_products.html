@@ -1,0 +1,21 @@
+{% load static %}
+
+<link rel="stylesheet" href="{% static 'scrapper/style.css' %}">
+
+<header>
+    <a href="{% url 'add_products' %}">Add new products</a> |
+    <a href="{% url 'my_products' %}">My products</a>
+</header>
+
+{% block content %}
+    <div class="container">
+        <form method="POST">
+          <fieldset>
+            <legend>Add products IDs, each from new line: </legend>
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit" class="btn btn-primary">Submit</button>
+          </fieldset>
+        </form>
+    </div>
+{% endblock content %}
