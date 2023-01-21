@@ -1,10 +1,9 @@
-from django import forms
 from django.forms import ModelForm
-from .models import Product
+from .models import IdStorage
 
 
 class ProductForm(ModelForm):
     class Meta:
-        model = Product
+        model = IdStorage
         fields = ['product_ids']
         labels = {'product_ids': 'List of products ids:'}
