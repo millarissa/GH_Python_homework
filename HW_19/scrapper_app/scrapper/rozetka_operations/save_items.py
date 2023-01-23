@@ -11,14 +11,17 @@ if __name__ == '__main__':
 
 from rozetka_api import RozetkaAPI
 from db_operations import insert_items
+from scrapper.forms import ProductForm # noqa
 
 
-def save_rozetka_items(item_id):
+def save_rozetka_items():
     rozetka = RozetkaAPI()
+    product_ids = sys.argv[1]
 
-    rosetka_item_values = rozetka.get_item_data(item_id)
-    if rosetka_item_values:
-        insert_items(rosetka_item_values)
+    for item_id in product_ids.split('\n'):
+        rosetka_item_values = rozetka.get_item_data(item_id)
+        if rosetka_item_values:
+            insert_items(rosetka_item_values)
 
 
-save_rozetka_items(sys.argv[1])
+save_rozetka_items()
