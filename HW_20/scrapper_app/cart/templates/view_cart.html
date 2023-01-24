@@ -1,0 +1,68 @@
+{% load static %}
+
+<link rel="stylesheet" href="{% static 'scrapper/style.css' %}">
+
+<header>
+    <a href="{% url 'scrapper:add_products' %}">Add new products</a> |
+    <a href="{% url 'scrapper:my_products' %}">My products</a> |
+    <a href="{% url 'cart:view_cart' %}">Cart</a>
+</header>
+
+{% block content %}
+    <h1>My cart</h1>
+
+    <form action="{% url 'cart:clear_cart' %}" method="POST">
+        {% csrf_token %}
+        <button type="submit">Clear cart</button>
+    </form>
+
+    {% for product in products %}
+    <div class="product_item">
+        <div class="product_id">
+            <span class="label">ID:</span>
+            {{ product.item_id }}
+        </div>
+        <div class="product_title">
+            <span class="label">Title:</span>
+            {{ product.title }}
+        </div>
+        <div class="product_price">
+            <span class="label">Price:</span>
+            {{ product.current_price }}
+            <span class="price_cur">UAH</span>
+        </div>
+        <div class="product_quantity">
+
+            <form action="{% url 'cart:change-cart' %}" method="POST">
+                {% csrf_token %}
+                {{ product.form_change_cart }}
+
+                <button type="submit">Change quantity</button>
+            </form>
+        </div>
+        <div class="product_sum">
+            <span class="label">Sum:</span>
+            {{ product.sum }}
+            <span class="price_cur">UAH</span>
+        </div>
+
+        <form action="{% url 'cart:delete-from-cart' %}" method="POST">
+            {% csrf_token %}
+            {{ product.delete_product }}
+            <button type="submit">Delete product</button>
+        </form>
+        <br>
+    </div>
+
+    {% empty %}
+    <p>Your cart is empty</p>
+
+    {% endfor %}
+
+    <div class="total_sum">
+        <span class="label">Total:</span>
+        {{ total_sum }}
+        <span class="price_cur">UAH</span>
+    </div>
+
+{% endblock content %}

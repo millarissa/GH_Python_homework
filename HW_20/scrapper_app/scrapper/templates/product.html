@@ -1,0 +1,54 @@
+{% extends "add_products.html" %}
+
+{% block content %}
+<h1>Product details:</h1>
+
+<div class="container">
+    <div class="product_item">
+        <div class="item_id">
+            <span class="label">ID:</span>
+            {{ product.item_id }}
+        </div>
+        <div class="title">
+            <span class="label">Product title:</span>
+            {{ product.title }}
+        </div>
+        <div class="link">
+            <span class="label">Link to item:</span>
+            <a href="{{product.href}}">{{ product.href }}</a>
+        </div>
+        <div class="old_price">
+            <span class="label">Old price:</span>
+            {{ product.old_price }}
+            <span class="price_cur">UAH</span>
+        </div>
+        <div class="current_price">
+            <span class="label">Current price:</span>
+            {{ product.current_price }}
+            <span class="price_cur">UAH</span>
+        </div>
+        <div class="brand">
+            <span class="label">Brand:</span>
+            {{ product.brand }}
+        </div>
+        <div class="category">
+            <span class="label">Category:</span>
+            {{ product.category }}
+        </div>
+        <br>
+        <form action="{% url 'cart:add_to_cart' %}" method="POST">
+            {% csrf_token %}
+            {% for field in form.visible_fields %}
+                <div class="fieldWrapper">
+                    {{ field.errors }}
+                    {{ field.label_tag }} {{ field }}
+                </div>
+            {% endfor %}
+            <button type="submit">Add to cart</button>
+        </form>
+
+    </div>
+
+</div>
+
+{% endblock content %}

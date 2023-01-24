@@ -1,0 +1,25 @@
+{% extends "add_products.html" %}
+
+{% block content %}
+<h1>My products</h1>
+
+<div class="container">
+    {% for item in items_list %}
+        <div class="product_item">
+            <div class="title">
+                <span class="label">Product title:</span>
+                {{ item.title }}
+            </div>
+            <div class="price">
+                <span class="label">Price:</span>
+                {{ item.current_price }}
+            </div>
+            <div class="more">
+                <a href="{% url 'scrapper:product' item.id %}">View more</a>
+            </div>
+        </div>
+    {% endfor %}
+
+</div>
+
+{% endblock content %}

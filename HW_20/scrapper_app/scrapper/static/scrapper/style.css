@@ -1,0 +1,18 @@
+span, .product_quantity label {
+    font-size: 18px;
+    font-weight: bold;
+}
+
+span.price_cur {
+    font-size: 14px;
+    font-weight: normal;
+}
+
+.product_item {
+    margin-bottom: 15px;
+}
+
+.total_sum {
+    font-size: 18px;
+    font-weight: bold;
+}
