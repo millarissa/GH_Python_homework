@@ -38,31 +38,27 @@ def view_cart(request):
 
 @require_http_methods(['POST'])
 def add_to_cart(request):
-    if request.method == 'POST':
-        form = AddProductToCart(request.POST)
+    form = AddProductToCart(request.POST)
 
-        if form.is_valid():
-            data = form.cleaned_data
-            cart = request.session.setdefault('cart', {})
+    if form.is_valid():
+        data = form.cleaned_data
+        cart = request.session.setdefault('cart', {})
 
-            cart.setdefault(str(data['product_id']), 0)
-            cart[str(data['product_id'])] += data['quantity']
+        cart.setdefault(str(data['product_id']), 0)
+        cart[str(data['product_id'])] += data['quantity']
 
-            request.session_modified = True
-            request.session.save()
-            return redirect(
-                reverse('scrapper:product', kwargs={'item_id': data['product_id']})
-            )
-        else:
-            return redirect(reverse('scrapper:my_products'))
-
+        request.session_modified = True
+        request.session.save()
+        return redirect(
+            reverse('scrapper:product', kwargs={'item_id': data['product_id']})
+        )
     else:
         return redirect(reverse('scrapper:my_products'))
 
 
 @require_http_methods(['POST'])
 def clear_cart(request):
-    if request.method == 'POST':
+    if 'cart' in request.session:
         del request.session['cart']
         request.session.save()
     return redirect(reverse('cart:view_cart'))
@@ -70,24 +66,22 @@ def clear_cart(request):
 
 @require_http_methods(['POST'])
 def delete_product_from_cart(request):
-    if request.method == 'POST':
-        form = ProductDelete(request.POST)
-        data = form.cleaned_data
-        cart = request.session.setdefault('cart', {})
-        del cart[str(data['item_id'])]
-        request.session.save()
+    form = ProductDelete(request.POST)
+    data = form.cleaned_data
+    cart = request.session.setdefault('cart', {})
+    del cart[str(data['item_id'])]
+    request.session.save()
     return redirect(reverse('cart:view_cart'))
 
 
 @require_http_methods(['POST'])
 def change_product_quantity(request):
-    if request.method == 'POST':
-        change_form = AddProductToCart(request.POST)
-        if change_form.is_valid():
-            data = change_form.cleaned_data
-            cart = request.session.setdefault('cart', {})
-            cart[str(data['product_id'])] = data['quantity']
-            request.session.save()
+    change_form = AddProductToCart(request.POST)
+    if change_form.is_valid():
+        data = change_form.cleaned_data
+        cart = request.session.setdefault('cart', {})
+        cart[str(data['product_id'])] = data['quantity']
+        request.session.save()
 
     return redirect(reverse('cart:view_cart'))
 
