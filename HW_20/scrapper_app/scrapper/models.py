@@ -16,3 +16,4 @@ class Product(models.Model):
     old_price = models.CharField(max_length=10, default='0')
     brand = models.CharField(max_length=20, default='No brand')
     category = models.CharField(max_length=20, default='No category')
+    sell_status = models.CharField(max_length=20, default='Unknown')

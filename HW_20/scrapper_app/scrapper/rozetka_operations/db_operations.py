@@ -17,5 +17,6 @@ def insert_items(rosetka_item_values):
         current_price=item_details[3],
         old_price=item_details[4],
         brand=item_details[5],
-        category=item_details[6]
+        category=item_details[6],
+        sell_status=item_details[7]
     )

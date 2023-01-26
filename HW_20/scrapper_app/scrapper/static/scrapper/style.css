@@ -16,3 +16,11 @@ span.price_cur {
     font-size: 18px;
     font-weight: bold;
 }
+
+.not_in_stock {
+    background-color: #e94b6d;
+}
+
+.in_stock {
+    background-color: #ade35a;
+}

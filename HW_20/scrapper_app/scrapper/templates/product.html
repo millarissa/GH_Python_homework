@@ -35,7 +35,16 @@
             <span class="label">Category:</span>
             {{ product.category }}
         </div>
+        <div class="sell_status">
+            <span class="label">Status:</span>
+            {% if product.sell_status == 'available' %}
+            <span class="in_stock">In stock</span>
+            {% else %}
+            <span class="not_in_stock">Not in stock</span>
+            {% endif %}
+        </div>
         <br>
+        {% if product.sell_status == 'available' %}
         <form action="{% url 'cart:add_to_cart' %}" method="POST">
             {% csrf_token %}
             {% for hidden in form.hidden_fields %}
@@ -49,6 +58,7 @@
             {% endfor %}
             <button type="submit">Add to cart</button>
         </form>
+        {% endif %}
 
     </div>
 

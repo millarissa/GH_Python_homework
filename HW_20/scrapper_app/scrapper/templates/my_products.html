@@ -14,6 +14,14 @@
                 <span class="label">Price:</span>
                 {{ item.current_price }}
             </div>
+            <div class="sell_status">
+                <span class="label">Status:</span>
+                {% if item.sell_status == 'available' %}
+                <span class="in_stock">In stock</span>
+                {% else %}
+                <span class="not_in_stock">Not in stock</span>
+                {% endif %}
+            </div>
             <div class="more">
                 <a href="{% url 'scrapper:product' item.id %}">View more</a>
             </div>

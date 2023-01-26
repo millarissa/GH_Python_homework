@@ -67,10 +67,11 @@ def clear_cart(request):
 @require_http_methods(['POST'])
 def delete_product_from_cart(request):
     form = ProductDelete(request.POST)
-    data = form.cleaned_data
-    cart = request.session.setdefault('cart', {})
-    del cart[str(data['item_id'])]
-    request.session.save()
+    if form.is_valid():
+        data = form.cleaned_data
+        cart = request.session.setdefault('cart', {})
+        del cart[str(data['item_id'])]
+        request.session.save()
     return redirect(reverse('cart:view_cart'))
 
 
