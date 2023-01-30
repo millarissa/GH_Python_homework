@@ -1,0 +1,54 @@
+span, .product_quantity label {
+    font-size: 18px;
+    font-weight: bold;
+}
+
+span.price_cur {
+    font-size: 14px;
+    font-weight: normal;
+}
+
+.product_item {
+    margin-bottom: 15px;
+}
+
+.total_sum {
+    font-size: 18px;
+    font-weight: bold;
+}
+
+.not_in_stock, .alert {
+    background-color: #e94b6d;
+}
+
+.in_stock {
+    background-color: #ade35a;
+}
+
+.login {
+    float: right;
+}
+
+.login_block {
+    position: relative;
+    width: 100%;
+}
+
+.login_form {
+    position: absolute;
+    top: 50%;
+    right: 50%;
+    border: 2px solid;
+    padding: 10px;
+}
+
+.admin_block{
+    padding: 20px 10px;
+    border: 2px solid;
+    margin: 10px 0;
+    width: max-content;
+}
+
+.edit {
+    padding-bottom: 10px;
+}
