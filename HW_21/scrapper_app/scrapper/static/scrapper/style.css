@@ -49,6 +49,10 @@ span.price_cur {
     width: max-content;
 }
 
+.cart_block {
+    padding: 20px 0;
+}
+
 .edit {
     padding-bottom: 10px;
 }

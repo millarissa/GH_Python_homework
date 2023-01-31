@@ -19,7 +19,7 @@ class RozetkaAPI:
                 old_price=item_info['old_price'],
                 brand=item_info['brand'],
                 category_id=item_info['last_category']['id'],
-                category_name=item_info['last_category']['title'],
+                category_title=item_info['last_category']['title'],
                 sell_status=item_info['sell_status']
             )
 

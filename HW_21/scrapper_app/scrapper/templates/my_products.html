@@ -15,43 +15,65 @@
 
     <span class="login">
         {% if request.user.is_authenticated %}
-        Hello, {{ request.user.get_username }} |
-        <a href="{% url 'scrapper:logout' %}">Logout</a>
-        {% else%}
-        Hello, guest |
-        <a href="{% url 'scrapper:login' %}">Login</a>
+            {%  if request.user.is_superuser %}
+                Hello, {{ request.user.get_username }} |
+                <a href="{% url 'admin:index' %}">Admin Panel</a> |
+            {% else %}
+                Hello, {{ request.user.get_username }} |
+            {% endif %}
+            <a href="{% url 'scrapper:logout' %}">Logout</a>
+        {% else %}
+            Hello, guest |
+            <a href="{% url 'scrapper:login' %}">Login</a>
         {% endif %}
     </span>
 </header>
 
 {% block content %}
-<h1>My products</h1>
-
-<div class="container">
-    {% for item in items_list %}
-        <div class="product_item">
-            <div class="title">
-                <span class="label">Product title:</span>
-                {{ item.title }}
-            </div>
-            <div class="price">
-                <span class="label">Price:</span>
-                {{ item.current_price }}
-            </div>
-            <div class="sell_status">
-                <span class="label">Status:</span>
-                {% if item.sell_status == 'available' %}
-                <span class="in_stock">In stock</span>
-                {% else %}
-                <span class="not_in_stock">Not in stock</span>
-                {% endif %}
-            </div>
-            <div class="more">
-                <a href="{% url 'scrapper:product' item.id %}">View more</a>
-            </div>
+    {% for message in messages %}
+        <div class="alert alert-success">
+               {{ message }}
         </div>
     {% endfor %}
 
-</div>
+    <div class="block_categories">
+        <p>All categories:</p>
+        {% for category in categories %}
+            <ul class="categories">
+                <li class="title">
+                    <a href="{% url 'scrapper:products_by_cat' category.id %}">{{ category.category_title }}</a>
+                </li>
+            </ul>
+        {% endfor %}
+    </div>
+
+    <h2>All products:</h2>
+
+    <div class="container">
+        {% for item in items_list %}
+            <div class="product_item">
+                <div class="title">
+                    <span class="label">Product title:</span>
+                    {{ item.title }}
+                </div>
+                <div class="price">
+                    <span class="label">Price:</span>
+                    {{ item.current_price }}
+                </div>
+                <div class="sell_status">
+                    <span class="label">Status:</span>
+                    {% if item.sell_status == 'available' %}
+                    <span class="in_stock">In stock</span>
+                    {% else %}
+                    <span class="not_in_stock">Not in stock</span>
+                    {% endif %}
+                </div>
+                <div class="more">
+                    <a href="{% url 'scrapper:product' item.id %}">View more</a>
+                </div>
+            </div>
+        {% endfor %}
+
+    </div>
 
 {% endblock content %}

@@ -33,7 +33,7 @@
         </div>
         <div class="category">
             <span class="label">Category:</span>
-            {{ product.category }}
+            {{ category.category_title }}
         </div>
         <div class="sell_status">
             <span class="label">Status:</span>
@@ -55,19 +55,21 @@
 
         {% endif %}
         {% if product.sell_status == 'available' and request.user.is_authenticated %}
-        <form action="{% url 'cart:add_to_cart' %}" method="POST">
-            {% csrf_token %}
-            {% for hidden in form.hidden_fields %}
-                {{ hidden }}
-            {% endfor %}
-            {% for field in form.visible_fields %}
-                <div class="fieldWrapper">
-                    {{ field.errors }}
-                    {{ field.label_tag }} {{ field }}
-                </div>
-            {% endfor %}
-            <button type="submit">Add to cart</button>
-        </form>
+        <div class="cart_block">
+            <form action="{% url 'cart:add_to_cart' %}" method="POST">
+                {% csrf_token %}
+                {% for hidden in form.hidden_fields %}
+                    {{ hidden }}
+                {% endfor %}
+                {% for field in form.visible_fields %}
+                    <div class="fieldWrapper">
+                        {{ field.errors }}
+                        {{ field.label_tag }} {{ field }}
+                    </div>
+                {% endfor %}
+                <button type="submit">Add to cart</button>
+            </form>
+        </div>
         {% endif %}
 
     </div>

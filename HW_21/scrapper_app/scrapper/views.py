@@ -1,11 +1,11 @@
 import subprocess
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth import authenticate, login, logout
-from django.contrib.auth.decorators import login_required, user_passes_test
+from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 
 from .forms import ProductForm, AddProductToCart, LoginForm, ProductEdit
-from .models import Product
+from .models import Product, Category
 
 
 def page_add_products(request):
@@ -21,18 +21,44 @@ def page_add_products(request):
 
 
 def page_my_products(request):
+    categories = Category.objects.all()
     items_list = Product.objects.all()
-    return render(request, "my_products.html", {'items_list': items_list})
+    context = {
+        "categories": categories,
+        'items_list': items_list
+    }
+    return render(request, "my_products.html", context)
+
+
+def page_products_by_cat(request, cat_id):
+    all_categories = Category.objects.all()
+    chosen_category = Category.objects.get(id=cat_id)
+    products = Product.objects.filter(category__id=cat_id)
+    context = {
+        "categories": all_categories,
+        'chosen_category': chosen_category,
+        'products': products
+    }
+
+    return render(request, "products_by_cat.html", context)
 
 
 def page_product(request, item_id):
     product = get_object_or_404(Product, id=item_id)
+    category = Category.objects.get(id=product.category_id)
+
     form_cart = AddProductToCart(
         initial={'product_id': product.id,
                  'quantity': 1
                  }
     )
-    return render(request, 'product.html', {'product': product, 'form': form_cart})
+    context = {
+        'product': product,
+        'form': form_cart,
+        'category': category
+    }
+
+    return render(request, 'product.html', context)
 
 
 def page_login(request):
@@ -45,7 +71,7 @@ def page_login(request):
             user = authenticate(username=username, password=password)
             if user is not None:
                 login(request, user)
-                return render(request, 'my_products.html')
+                return redirect('/scrapper/my-products/')
             else:
                 messages.error(request, 'Sorry, that login was invalid. Please try again.')
                 return render(request, 'login.html', {"form": form})
@@ -57,31 +83,38 @@ def page_login(request):
 
 def page_logout(request):
     logout(request)
-    return render(request, 'my_products.html')
+    return redirect('/scrapper/my-products/')
 
 
-@user_passes_test(lambda u: u.is_superuser, login_url='/scrapper/my-products/')
+@login_required()
 def page_delete_product(request, product_id):
     context = {}
-    product = get_object_or_404(Product, id=product_id)
-    if request.method == 'POST':
-        product.delete()
-        return render(request, 'my_products.html')
+    if request.user.is_superuser:
+        product = get_object_or_404(Product, id=product_id)
+        if request.method == 'POST':
+            product.delete()
+            return redirect('/scrapper/my-products/')
+    else:
+        messages.error(request, 'Wrong access level!')
+        return redirect('/scrapper/my-products/')
 
     return render(request, 'delete_product.html', context)
 
 
-@user_passes_test(lambda u: u.is_superuser, login_url='/scrapper/my-products/')
+@login_required()
 def page_edit_product(request, product_id):
     context = {}
-    product = get_object_or_404(Product, id=product_id)
-    form = ProductEdit(request.POST or None, instance=product)
+    if request.user.is_superuser:
+        product = get_object_or_404(Product, id=product_id)
+        form = ProductEdit(request.POST or None, instance=product)
 
-    if form.is_valid():
-        form.save()
-        return render(request, 'my_products.html')
+        if form.is_valid():
+            form.save()
+            return redirect('/scrapper/my-products/')
 
-    context['form'] = form
+        context['form'] = form
+    else:
+        messages.error(request, 'Wrong access level!')
+        return redirect('/scrapper/my-products/')
 
-    return render(request, "update_product.html", context)
-
+    return render(request, "edit_product.html", context)

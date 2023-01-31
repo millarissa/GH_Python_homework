@@ -6,6 +6,7 @@ app_name = 'scrapper'
 urlpatterns = [
     path('add-products/', views.page_add_products, name='add_products'),
     path('my-products/', views.page_my_products, name='my_products'),
+    path('products/cat/<int:cat_id>', views.page_products_by_cat, name='products_by_cat'),
     path('product/<int:item_id>/', views.page_product, name='product'),
     path('login/', views.page_login, name='login'),
     path('logout/', views.page_logout, name='logout'),
