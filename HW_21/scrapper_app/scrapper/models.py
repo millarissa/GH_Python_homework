@@ -11,6 +11,9 @@ class IdStorage(models.Model):
 class Category(models.Model):
     category_title = models.TextField(max_length=50, default='0')
 
+    def __str__(self):
+        return self.category_title
+
 
 class Product(models.Model):
     item_id = models.CharField(max_length=20, default='No id')
