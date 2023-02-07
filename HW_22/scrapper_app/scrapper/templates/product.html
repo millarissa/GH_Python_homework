@@ -1,0 +1,108 @@
+{% extends "my_products.html" %}
+
+{% block content %}
+<h1>Product details:</h1>
+
+<div class="container">
+    <div class="product_item">
+        <div class="item_id">
+            <span class="label">ID:</span>
+            {{ product.item_id }}
+        </div>
+        <div class="title">
+            <span class="label">Product title:</span>
+            {{ product.title }}
+        </div>
+        <div class="link">
+            <span class="label">Link to item:</span>
+            <a href="{{product.href}}">{{ product.href }}</a>
+        </div>
+        <div class="old_price">
+            <span class="label">Old price:</span>
+            {{ product.old_price }}
+            <span class="price_cur">UAH</span>
+        </div>
+        <div class="current_price">
+            <span class="label">Current price:</span>
+            {{ product.current_price }}
+            <span class="price_cur">UAH</span>
+        </div>
+        <div class="brand">
+            <span class="label">Brand:</span>
+            {{ product.brand }}
+        </div>
+        <div class="category">
+            <span class="label">Category:</span>
+            {{ category.category_title }}
+        </div>
+        <div class="sell_status">
+            <span class="label">Status:</span>
+            {% if product.sell_status == 'available' %}
+            <span class="in_stock">In stock</span>
+            {% else %}
+            <span class="not_in_stock">Not in stock</span>
+            {% endif %}
+        </div>
+        {% if request.user.is_superuser %}
+        <div class="admin_block">
+            <div class="admin_link edit">
+                <a href="{% url 'scrapper:edit_product' product_id=product.id %}">Edit product</a>
+            </div>
+            <div class="admin_link delete">
+                <a href="{% url 'scrapper:delete_product' product_id=product.id %}">Delete product</a>
+            </div>
+        </div>
+        {% endif %}
+
+        {% if product.sell_status == 'available' and request.user.is_authenticated %}
+        <div class="cart_block">
+{#            <form action="{% url 'cart:add_to_cart' %}" method="POST">#}
+                {% csrf_token %}
+                {% for hidden in form.hidden_fields %}
+                    {{ hidden }}
+                {% endfor %}
+                {% for field in form.visible_fields %}
+                    <div class="fieldWrapper">
+                        {{ field.errors }}
+                        {{ field.label_tag }} {{ field }}
+                    </div>
+                {% endfor %}
+                <button type="submit" id="add_to_cart_button">Add to cart</button>
+{#            </form>#}
+        </div>
+        {% endif %}
+
+    </div>
+
+</div>
+
+<script>
+    $(document).ready(function(){
+        $(document).on('click', '#add_to_cart_button', function (){
+            $.ajax({
+                url: "{% url 'cart:add_to_cart' %}",
+                method: "POST",
+                data: {
+                    quantity: $("#id_quantity").val(),
+                    product_id: $("#id_product_id").val()
+                },
+                beforeSend: function (xhr) {
+                  xhr.setRequestHeader("X-CSRFToken", "{{ csrf_token }}")
+                },
+                success: function(result){
+                    $("#cart_quantity").html(result.cart_quantity);
+                    $("#add_to_cart_button").html(result.message);
+                    setTimeout(function (){
+                        $("#add_to_cart_button").html('Add to cart');
+                    }, 2000)
+                },
+                error: function (xhr, status, error) {
+                    console.log(xhr)
+                }
+            });
+        })
+    })
+</script>
+
+{% endblock content %}
+

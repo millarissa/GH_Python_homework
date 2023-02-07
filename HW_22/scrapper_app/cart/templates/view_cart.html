@@ -1,0 +1,163 @@
+{% load static %}
+
+<link rel="stylesheet" href="{% static 'scrapper/style.css' %}">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
+
+<header>
+    <a href="{% url 'scrapper:add_products' %}">Add new products</a> |
+    <a href="{% url 'scrapper:my_products' %}">My products</a> |
+    <a href="{% url 'cart:view_cart' %}">Cart
+        (<span id="cart_quantity"></span>)
+    </a>
+</header>
+
+{% block content %}
+    <h1>My cart</h1>
+
+    <p id="messages"></p>
+
+    <div class="edit_cart_block clear_cart_block">
+        {% csrf_token %}
+        <button type="submit" id="clear_cart_button">Clear cart</button>
+    </div>
+
+    <div id="cart_products">
+        {% for product in products %}
+            <div class="product_item product_item_{{ product.id }}">
+                <div class="product_id">
+                    <span class="label">ID:</span>
+                    {{ product.item_id }}
+                </div>
+                <div class="product_title">
+                    <span class="label">Title:</span>
+                    {{ product.title }}
+                </div>
+                <div class="product_price">
+                    <span class="label">Price:</span>
+                    {{ product.current_price }}
+                    <span class="price_cur">UAH</span>
+                </div>
+                <div class="product_quantity">
+                    <div class="edit_cart_block change_quantity_block">
+                        {% csrf_token %}
+                        {{ product.form_change_cart }}
+
+                        <button type="submit" id="change_quantity_button">Change quantity</button>
+                    </div>
+                </div>
+                <div class="product_sum">
+                    <span class="label">Sum:</span>
+                    {{ product.sum }}
+                    <span class="price_cur">UAH</span>
+                </div>
+                <div class="edit_cart_block delete_product_block">
+                    {% csrf_token %}
+                    {{ product.delete_product }}
+                    <button type="submit" id="delete_product_button">Delete product</button>
+                </div>
+                <br>
+            </div>
+
+            {% empty %}
+            <p>Your cart is empty</p>
+
+        {% endfor %}
+
+    </div>
+
+    <div class="total_sum">
+        <span class="label">Total:</span>
+        {{ total_sum }}
+        <span class="price_cur">UAH</span>
+    </div>
+
+{% endblock content %}
+
+<script>
+    $(document).ready(function () {
+        {#Show total quantity#}
+        $.ajax({
+            url: "{% url 'cart:api-cart-quantity' %}",
+            method: "GET",
+            success: function (result) {
+                $("#cart_quantity").html(result.cart_quantity);
+            }
+        });
+
+        {#Change quantity#}
+        $(document).on('click', '#change_quantity_button', function (){
+            $.ajax({
+                url: '{% url 'cart:change-cart' %}',
+                method: 'POST',
+                data: {
+                    quantity: $("#id_quantity").val(),
+                    product_id: $("#id_product_id").val()
+                },
+                beforeSend: function (xhr) {
+                  xhr.setRequestHeader("X-CSRFToken", "{{ csrf_token }}")
+                },
+                success: function(result){
+                    $("#cart_quantity").html(result.cart_quantity);
+                    $("#change_quantity_button").html(result.message);
+                    setTimeout(function (){
+                        $("#change_quantity_button").html('Change quantity');
+                    }, 2000)
+                },
+                error: function (xhr, status, error) {
+                    console.log(xhr)
+                }
+
+            });
+        })
+
+        {#Delete product#}
+        $(document).on('click', '#delete_product_button', function (){
+            $.ajax({
+                url: '{% url 'cart:delete-from-cart' %}',
+                method: 'POST',
+                type: 'DELETE',
+                data: {
+                    item_id: $("#id_item_id").val()
+                },
+                beforeSend: function (xhr) {
+                  xhr.setRequestHeader("X-CSRFToken", "{{ csrf_token }}")
+                },
+                success: function(result) {
+                    $("#cart_quantity").html(result.cart_quantity);
+                    $("div").remove(".product_item_" + $("#id_item_id").val());
+                    $("#messages").html(result.message);
+                    setTimeout(function (){
+                        $("#messages").html(' ');
+                    }, 2000)
+                },
+                error: function (xhr, status, error) {
+                    console.log(xhr)
+                }
+            });
+        })
+
+        {#Clear cart#}
+        $(document).on('click', '#clear_cart_button', function (){
+            $.ajax({
+                url: '{% url 'cart:clear_cart' %}',
+                method: 'POST',
+                beforeSend: function (xhr) {
+                  xhr.setRequestHeader("X-CSRFToken", "{{ csrf_token }}")
+                },
+                success: function(result) {
+                    $("#cart_quantity").html(result.cart_quantity);
+                    $("#messages").html(result.message);
+                    $("div").remove(".product_item");
+                    setTimeout(function (){
+                        $("#messages").html(' ');
+                    }, 2000)
+                },
+                error: function (xhr, status, error) {
+                    console.log(xhr)
+                }
+            });
+        })
+
+    })
+</script>
+
