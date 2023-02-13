@@ -42,18 +42,31 @@
                         {% csrf_token %}
                         {{ product.form_change_cart }}
 
-                        <button type="submit" id="change_quantity_button">Change quantity</button>
+                        <button
+                                type="submit"
+                                id="change_quantity_button"
+                                data_product_id="{{ product.id }}"
+                                data_new_quantity="{{ product.quantity }}"
+                                data_price="{{ product.current_price }}">
+                            Change quantity
+                        </button>
+                    </div>
+                    <div class="product_sum">
+                        <span class="label">Sum:</span>
+                        <span class="current_sum">{{ product.sum }}</span>
+                        <span class="price_cur">UAH</span>
                     </div>
                 </div>
-                <div class="product_sum">
-                    <span class="label">Sum:</span>
-                    {{ product.sum }}
-                    <span class="price_cur">UAH</span>
-                </div>
+
                 <div class="edit_cart_block delete_product_block">
                     {% csrf_token %}
                     {{ product.delete_product }}
-                    <button type="submit" id="delete_product_button">Delete product</button>
+                    <button
+                            type="submit"
+                            id="delete_product_button"
+                            data_product_id="{{ product.id }}">
+                        Delete product
+                    </button>
                 </div>
                 <br>
             </div>
@@ -67,7 +80,7 @@
 
     <div class="total_sum">
         <span class="label">Total:</span>
-        {{ total_sum }}
+        <span class="total_sum_number">{{ total_sum }}</span>
         <span class="price_cur">UAH</span>
     </div>
 
@@ -86,21 +99,31 @@
 
         {#Change quantity#}
         $(document).on('click', '#change_quantity_button', function (){
+            var data_product_id = $(this).attr("data_product_id")
+            $(this).attr('data_new_quantity', $(this).parent().find('#id_quantity').val())
+            var data_new_quantity = $(this).attr("data_new_quantity")
+            var price = $(this).attr('data_price')
+            var price_sum = price * data_new_quantity
+            var current_sum = $(this).parent().parent().find('.current_sum')
+            var current_button = $(this)
+
             $.ajax({
                 url: '{% url 'cart:change-cart' %}',
                 method: 'POST',
                 data: {
-                    quantity: $("#id_quantity").val(),
-                    product_id: $("#id_product_id").val()
+                    quantity: data_new_quantity,
+                    product_id: data_product_id
                 },
                 beforeSend: function (xhr) {
                   xhr.setRequestHeader("X-CSRFToken", "{{ csrf_token }}")
                 },
                 success: function(result){
                     $("#cart_quantity").html(result.cart_quantity);
-                    $("#change_quantity_button").html(result.message);
+                    current_button.html(result.message);
+                    $(".total_sum_number").html(result.total_sum);
+                    current_sum.html(price_sum)
                     setTimeout(function (){
-                        $("#change_quantity_button").html('Change quantity');
+                        current_button.html('Change quantity');
                     }, 2000)
                 },
                 error: function (xhr, status, error) {
@@ -110,21 +133,24 @@
             });
         })
 
+
         {#Delete product#}
         $(document).on('click', '#delete_product_button', function (){
+            var data_product_id = $(this).attr("data_product_id")
+            console.log(data_product_id);
             $.ajax({
                 url: '{% url 'cart:delete-from-cart' %}',
                 method: 'POST',
                 type: 'DELETE',
                 data: {
-                    item_id: $("#id_item_id").val()
+                    item_id: data_product_id
                 },
                 beforeSend: function (xhr) {
                   xhr.setRequestHeader("X-CSRFToken", "{{ csrf_token }}")
                 },
                 success: function(result) {
                     $("#cart_quantity").html(result.cart_quantity);
-                    $("div").remove(".product_item_" + $("#id_item_id").val());
+                    $("div").remove(".product_item_" + data_product_id);
                     $("#messages").html(result.message);
                     setTimeout(function (){
                         $("#messages").html(' ');
@@ -146,6 +172,7 @@
                 },
                 success: function(result) {
                     $("#cart_quantity").html(result.cart_quantity);
+                    $(".total_sum_number").html(result.total_sum);
                     $("#messages").html(result.message);
                     $("div").remove(".product_item");
                     setTimeout(function (){

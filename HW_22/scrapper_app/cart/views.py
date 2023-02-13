@@ -10,9 +10,10 @@ from scrapper.models import Product # noqa
 def view_cart(request):
     cart = request.session.get('cart', {})
     context = {'cart': cart}
+    total_sum = 0
     if cart:
         products = Product.objects.filter(id__in=cart.keys()).values()
-        total_sum = ''
+
         if products:
             products_list = [product for product in products]
             for product in products_list:
@@ -33,7 +34,11 @@ def view_cart(request):
                    'cart': cart,
                    'total_sum': total_sum
                    }
-
+    else:
+        context = {
+                   'cart': cart,
+                   'total_sum': total_sum
+                   }
     return render(request, 'view_cart.html', context=context)
 
 
@@ -60,7 +65,7 @@ def clear_cart(request):
     if 'cart' in request.session:
         del request.session['cart']
         request.session.save()
-    return JsonResponse({'message': 'Cart was cleared', 'cart_quantity': 0})
+    return JsonResponse({'message': 'Cart was cleared', 'cart_quantity': 0, 'total_sum': 0})
 
 
 @require_http_methods(['POST'])
@@ -77,12 +82,25 @@ def delete_product_from_cart(request):
 @require_http_methods(['POST'])
 def change_product_quantity(request):
     change_form = AddProductToCart(request.POST)
+
     if change_form.is_valid():
         data = change_form.cleaned_data
         cart = request.session.setdefault('cart', {})
+
+        products = Product.objects.filter(id__in=cart.keys()).values()
+        products_list = [product for product in products]
+        for product in products_list:
+            product['quantity'] = cart[str(product['id'])]
+            product['sum'] = int(data['quantity']) * int(product['current_price'])
+
+        total_sum = sum([product['sum'] for product in products_list])
         cart[str(data['product_id'])] = data['quantity']
         request.session.save()
-        return JsonResponse({'message': 'Product`s quantity was changed', 'cart_quantity': sum(cart.values())})
+        return JsonResponse({
+            'message': 'Product`s quantity was changed',
+            'cart_quantity': sum(cart.values()),
+            'total_sum': total_sum
+        })
 
 
 def cart_quantity(request):
