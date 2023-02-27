@@ -1,0 +1,44 @@
+{% extends "my_products.html" %}
+
+{% block content %}
+    <div class="block_categories">
+        <a href="{% url 'scrapper:my_products' %}">Back to all categories</a>
+        {% for category in categories %}
+        <ul class="categories">
+            <li class="title">
+                <a href="{% url 'scrapper:products_by_cat' category.id %}">{{ category.category_title }}</a>
+            </li>
+        </ul>
+        {% endfor %}
+    </div>
+
+    <h2> {{ chosen_category.category_title }} </h2>
+
+    <div class="container">
+        {% for product in products %}
+            <div class="product_item">
+                <div class="title">
+                    <span class="label">Product title:</span>
+                    {{ product.title }}
+                </div>
+                <div class="price">
+                    <span class="label">Price:</span>
+                    {{ product.current_price }}
+                </div>
+                <div class="sell_status">
+                    <span class="label">Status:</span>
+                    {% if product.sell_status == 'available' %}
+                    <span class="in_stock">In stock</span>
+                    {% else %}
+                    <span class="not_in_stock">Not in stock</span>
+                    {% endif %}
+                </div>
+                <div class="more">
+                    <a href="{% url 'scrapper:product' product.id %}">View more</a>
+                </div>
+            </div>
+        {% endfor %}
+
+    </div>
+
+{% endblock content %}

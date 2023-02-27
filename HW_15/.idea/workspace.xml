@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ChangeListManager">
+    <list default="true" id="ec6e0748-9127-4489-90c3-79d8378a022e" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/../HW_23/scrapper_app/cart/__init__.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../HW_23/scrapper_app/cart/admin.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../HW_23/scrapper_app/cart/apps.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../HW_23/scrapper_app/cart/migrations/__init__.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../HW_23/scrapper_app/cart/models.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../HW_23/scrapper_app/cart/templates/view_cart.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../HW_23/scrapper_app/cart/tests.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../HW_23/scrapper_app/cart/urls.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../HW_23/scrapper_app/cart/views.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../HW_23/scrapper_app/db.sqlite3" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../HW_23/scrapper_app/scrapper/__init__.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../HW_23/scrapper_app/scrapper/admin.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../HW_23/scrapper_app/scrapper/apps.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../HW_23/scrapper_app/scrapper/forms.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../HW_23/scrapper_app/scrapper/migrations/0001_initial.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../HW_23/scrapper_app/scrapper/migrations/0002_category_alter_product_brand_alter_product_category.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../HW_23/scrapper_app/scrapper/migrations/0003_remove_product_category_delete_category.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../HW_23/scrapper_app/scrapper/migrations/0004_category_product_category.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../HW_23/scrapper_app/scrapper/migrations/0005_rename_category_category_category_name.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../HW_23/scrapper_app/scrapper/migrations/0006_rename_category_name_category_category_title.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../HW_23/scrapper_app/scrapper/migrations/0007_remove_product_category_delete_category.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../HW_23/scrapper_app/scrapper/migrations/0008_category_product_category.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../HW_23/scrapper_app/scrapper/migrations/0009_category_category_id.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../HW_23/scrapper_app/scrapper/migrations/0010_remove_category_category_id.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../HW_23/scrapper_app/scrapper/migrations/__init__.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../HW_23/scrapper_app/scrapper/models.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../HW_23/scrapper_app/scrapper/rozetka_operations/__init__.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../HW_23/scrapper_app/scrapper/rozetka_operations/db_operations.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../HW_23/scrapper_app/scrapper/rozetka_operations/rozetka_api.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../HW_23/scrapper_app/scrapper/rozetka_operations/save_items.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../HW_23/scrapper_app/scrapper/serializers.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../HW_23/scrapper_app/scrapper/static/scrapper/style.css" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../HW_23/scrapper_app/scrapper/tasks.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../HW_23/scrapper_app/scrapper/templates/add_products.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../HW_23/scrapper_app/scrapper/templates/delete_product.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../HW_23/scrapper_app/scrapper/templates/edit_product.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../HW_23/scrapper_app/scrapper/templates/login.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../HW_23/scrapper_app/scrapper/templates/my_products.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../HW_23/scrapper_app/scrapper/templates/product.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../HW_23/scrapper_app/scrapper/templates/products_by_cat.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../HW_23/scrapper_app/scrapper/tests.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../HW_23/scrapper_app/scrapper/urls.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../HW_23/scrapper_app/scrapper/views.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../HW_23/scrapper_app/scrapper_app/celery.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../HW_23/scrapper_app/scrapper_app/local_settings.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../HW_23/scrapper_app/scrapper_app/settings.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../HW_23/scrapper_app/scrapper_app/urls.py" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/.." />
+  </component>
+  <component name="ProjectId" id="2MK7U7TTPPqemBIqD8JabXY6jyG" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "RunOnceActivity.OpenProjectViewOnStart": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "WebServerToolWindowFactoryState": "false",
+    "last_opened_file_path": "/home/serpenta/Programs/GH_Homeworks/GH_Python_homework/HW_15",
+    "vue.rearranger.settings.migration": "true"
+  }
+}]]></component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="ec6e0748-9127-4489-90c3-79d8378a022e" name="Changes" comment="" />
+      <created>1677504432488</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1677504432488</updated>
+      <workItem from="1677504433529" duration="7000" />
+    </task>
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+</project>
