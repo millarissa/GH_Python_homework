@@ -1,7 +1,6 @@
-from django.shortcuts import render, redirect, reverse
+from django.shortcuts import render
 from django.views.decorators.http import require_http_methods
 from django.http.response import JsonResponse
-from rest_framework.response import Response
 
 from scrapper.forms import AddProductToCart, ProductDelete # noqa
 from scrapper.models import Product # noqa
